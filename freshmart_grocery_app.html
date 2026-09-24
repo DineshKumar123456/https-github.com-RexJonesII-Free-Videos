@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreshMart — Fresh Groceries Delivered</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,300;0,600;1,300;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-900: #0d2b1a;
+  --green-800: #14401f;
+  --green-700: #1a5c2c;
+  --green-600: #1e7a37;
+  --green-500: #22a047;
+  --green-400: #34c75e;
+  --green-300: #6fde90;
+  --green-100: #e6f9ec;
+  --green-50:  #f3fdf5;
+
+  --slate-900: #0f1923;
+  --slate-800: #1c2a35;
+  --slate-700: #2b3d4a;
+  --slate-600: #3d5260;
+  --slate-400: #7a9aad;
+  --slate-300: #adc4cf;
+  --slate-100: #e8f0f4;
+  --slate-50:  #f5f8fa;
+
+  --amber:  #f59e0b;
+  --red:    #ef4444;
+  --white:  #ffffff;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 15px; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--slate-50);
+  color: var(--slate-900);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── TOPBAR ────────────────────────────────── */
+.topbar {
+  background: var(--green-900);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 7px 24px;
+  letter-spacing: 0.04em;
+}
+.topbar span { color: var(--green-300); font-weight: 600; }
+
+/* ─── HEADER ────────────────────────────────── */
+header {
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-100);
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  max-width: 1320px; margin: 0 auto;
+  padding: 0 28px;
+  display: flex; align-items: center; gap: 20px; height: 68px;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; flex-shrink: 0;
+}
+.logo-icon {
+  width: 38px; height: 38px; background: var(--green-500);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+}
+.logo-text {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem; font-weight: 600;
+  color: var(--green-800); line-height: 1;
+}
+.logo-text span { color: var(--green-500); }
+
+.header-location {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border: 1px solid var(--slate-100);
+  border-radius: var(--radius-md); cursor: pointer;
+  font-size: 0.8rem; color: var(--slate-700); white-space: nowrap;
+  transition: border-color 0.2s;
+}
+.header-location:hover { border-color: var(--green-400); }
+.header-location svg { color: var(--green-500); flex-shrink: 0; }
+
+.search-bar {
+  flex: 1; position: relative;
+}
+.search-bar input {
+  width: 100%; padding: 10px 16px 10px 44px;
+  border: 1.5px solid var(--slate-100); border-radius: var(--radius-md);
+  font-family: inherit; font-size: 0.875rem; background: var(--slate-50);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  color: var(--slate-900);
+}
+.search-bar input:focus {
+  border-color: var(--green-400);
+  box-shadow: 0 0 0 3px rgba(34,160,71,0.1);
+  background: var(--white);
+}
+.search-bar input::placeholder { color: var(--slate-400); }
+.search-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--slate-400); pointer-events: none;
+}
+
+.header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.btn-icon {
+  position: relative; width: 42px; height: 42px;
+  border-radius: var(--radius-md); border: 1px solid var(--slate-100);
+  background: var(--white); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; color: var(--slate-700);
+  transition: all 0.2s; text-decoration: none;
+}
+.btn-icon:hover { border-color: var(--green-300); background: var(--green-50); color: var(--green-700); }
+
+.badge {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--red); color: var(--white);
+  font-size: 0.6rem; font-weight: 700;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--white);
+}
+
+.btn-primary {
+  background: var(--green-500); color: var(--white);
+  border: none; padding: 10px 20px; border-radius: var(--radius-md);
+  font-family: inherit; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-primary:hover { background: var(--green-600); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+/* ─── NAV CATEGORIES ────────────────────────── */
+.cat-nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-100);
+}
+.cat-nav-inner {
+  max-width: 1320px; margin: 0 auto; padding: 0 28px;
+  display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none;
+}
+.cat-nav-inner::-webkit-scrollbar { display: none; }
+.cat-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 12px 16px; border: none; background: none;
+  font-family: inherit; font-size: 0.8rem; font-weight: 500;
+  color: var(--slate-600); cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.cat-btn:hover { color: var(--green-600); }
+.cat-btn.active { color: var(--green-600); border-bottom-color: var(--green-500); }
+
+/* ─── LAYOUT ────────────────────────────────── */
+.main-layout {
+  max-width: 1320px; margin: 0 auto; padding: 28px 28px;
+  display: grid; grid-template-columns: 240px 1fr 300px; gap: 24px;
+  flex: 1;
+}
+
+/* ─── SIDEBAR ────────────────────────────────── */
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+.sidebar-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 20px; border: 1px solid var(--slate-100); box-shadow: var(--shadow-sm);
+}
+
+.sidebar-title {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--slate-400); margin-bottom: 14px;
+}
+
+.filter-group { margin-bottom: 18px; }
+.filter-label {
+  font-size: 0.8rem; font-weight: 600; color: var(--slate-700);
+  margin-bottom: 10px; display: block;
+}
+.filter-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; cursor: pointer;
+  font-size: 0.82rem; color: var(--slate-600);
+}
+.filter-option input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: var(--green-500);
+  cursor: pointer;
+}
+.filter-count {
+  margin-left: auto; font-size: 0.72rem; color: var(--slate-400);
+  background: var(--slate-100); padding: 2px 7px; border-radius: 20px;
+}
+
+.price-range {
+  display: flex; gap: 10px; align-items: center; margin-top: 8px;
+}
+.price-input {
+  width: 100%; padding: 8px 10px; border: 1.5px solid var(--slate-100);
+  border-radius: var(--radius-sm); font-family: inherit; font-size: 0.8rem;
+  outline: none; transition: border-color 0.2s;
+}
+.price-input:focus { border-color: var(--green-400); }
+
+/* promo card */
+.promo-sidebar {
+  background: linear-gradient(135deg, var(--green-700), var(--green-900));
+  color: var(--white); border-radius: var(--radius-lg); padding: 22px;
+  position: relative; overflow: hidden;
+}
+.promo-sidebar::before {
+  content: '🥦'; font-size: 5rem; position: absolute;
+  right: -10px; bottom: -10px; opacity: 0.15;
+}
+.promo-sidebar h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+.promo-sidebar p { font-size: 0.78rem; color: rgba(255,255,255,0.75); margin-bottom: 14px; }
+.btn-white {
+  background: var(--white); color: var(--green-800);
+  border: none; padding: 8px 18px; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-white:hover { background: var(--green-100); }
+
+/* ─── MAIN CONTENT ───────────────────────────── */
+.content { min-width: 0; }
+
+/* hero banner */
+.hero-banner {
+  background: linear-gradient(120deg, var(--green-800) 0%, var(--green-600) 55%, #2dd466 100%);
+  border-radius: var(--radius-xl); padding: 36px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; position: relative; overflow: hidden; color: var(--white);
+}
+.hero-banner::before {
+  content: '';
+  position: absolute; right: -40px; top: -40px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+}
+.hero-banner::after {
+  content: '';
+  position: absolute; right: 60px; bottom: -60px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.hero-text { position: relative; z-index: 1; }
+.hero-eyebrow {
+  font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--green-300); font-weight: 600; margin-bottom: 10px;
+}
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem; font-weight: 600; line-height: 1.2;
+  margin-bottom: 10px;
+}
+.hero-title em { font-style: italic; color: var(--green-300); }
+.hero-desc { font-size: 0.875rem; color: rgba(255,255,255,0.75); margin-bottom: 20px; max-width: 360px; }
+.btn-light {
+  background: var(--white); color: var(--green-800);
+  border: none; padding: 12px 26px; border-radius: var(--radius-md);
+  font-family: inherit; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-light:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.hero-emojis {
+  font-size: 4.5rem; line-height: 1;
+  position: relative; z-index: 1; text-align: right;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+  letter-spacing: 4px;
+}
+
+/* section headers */
+.sec-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.sec-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem; font-weight: 600; color: var(--slate-900);
+}
+.sec-link {
+  font-size: 0.8rem; font-weight: 600; color: var(--green-600);
+  text-decoration: none; display: flex; align-items: center; gap: 4px;
+}
+.sec-link:hover { color: var(--green-800); }
+
+/* quick categories */
+.quick-cats {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+  margin-bottom: 28px;
+}
+.quick-cat {
+  background: var(--white); border-radius: var(--radius-md);
+  padding: 16px 10px; text-align: center; cursor: pointer;
+  border: 1.5px solid var(--slate-100); transition: all 0.2s;
+  text-decoration: none;
+}
+.quick-cat:hover, .quick-cat.active {
+  border-color: var(--green-300); background: var(--green-50);
+  transform: translateY(-2px); box-shadow: var(--shadow-md);
+}
+.quick-cat-icon { font-size: 1.8rem; margin-bottom: 6px; display: block; }
+.quick-cat-name { font-size: 0.72rem; font-weight: 600; color: var(--slate-700); }
+
+/* products grid */
+.products-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-bottom: 28px;
+}
+
+.product-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1.5px solid var(--slate-100); overflow: hidden;
+  transition: all 0.25s; cursor: pointer; position: relative;
+}
+.product-card:hover {
+  border-color: var(--green-300);
+  box-shadow: var(--shadow-md); transform: translateY(-3px);
+}
+
+.product-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  padding: 3px 9px; border-radius: 20px;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-sale { background: var(--red); color: var(--white); }
+.badge-new  { background: var(--amber); color: var(--white); }
+.badge-organic { background: var(--green-500); color: var(--white); }
+
+.product-wishlist {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--white); border: 1px solid var(--slate-100);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; font-size: 0.85rem;
+}
+.product-wishlist:hover { background: #fff0f0; border-color: var(--red); }
+
+.product-img {
+  height: 150px; background: var(--slate-50);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem; border-bottom: 1px solid var(--slate-100);
+}
+
+.product-body { padding: 14px; }
+
+.product-category {
+  font-size: 0.68rem; font-weight: 600; color: var(--green-500);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px;
+}
+.product-name {
+  font-size: 0.875rem; font-weight: 600; color: var(--slate-900);
+  margin-bottom: 4px; line-height: 1.3;
+}
+.product-weight { font-size: 0.75rem; color: var(--slate-400); margin-bottom: 10px; }
+
+.product-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px;
+}
+.product-price { font-size: 1rem; font-weight: 700; color: var(--slate-900); }
+.product-price-old {
+  font-size: 0.75rem; color: var(--slate-400);
+  text-decoration: line-through; margin-left: 5px; font-weight: 400;
+}
+
+.add-btn {
+  background: var(--green-500); color: var(--white);
+  border: none; border-radius: var(--radius-sm);
+  width: 32px; height: 32px; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; font-weight: 300;
+}
+.add-btn:hover { background: var(--green-600); transform: scale(1.1); }
+
+.qty-ctrl {
+  display: flex; align-items: center; gap: 8px;
+}
+.qty-btn {
+  width: 28px; height: 28px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--green-300); background: var(--green-50);
+  color: var(--green-700); font-size: 1rem; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.qty-btn:hover { background: var(--green-500); color: var(--white); border-color: var(--green-500); }
+.qty-num { font-size: 0.875rem; font-weight: 700; color: var(--slate-900); min-width: 18px; text-align: center; }
+
+/* rating */
+.product-rating { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+.stars { color: var(--amber); font-size: 0.75rem; }
+.rating-count { font-size: 0.7rem; color: var(--slate-400); }
+
+/* ─── KPI DASHBOARD ──────────────────────────── */
+.kpi-section { margin-bottom: 28px; }
+
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+}
+
+.kpi-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 18px 20px; border: 1.5px solid var(--slate-100);
+  box-shadow: var(--shadow-sm); transition: all 0.2s;
+}
+.kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+.kpi-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+.kpi-icon {
+  width: 40px; height: 40px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.kpi-icon.green { background: var(--green-100); }
+.kpi-icon.blue  { background: #e0f0ff; }
+.kpi-icon.amber { background: #fff3cd; }
+.kpi-icon.purple{ background: #f0e8ff; }
+
+.kpi-trend {
+  font-size: 0.7rem; font-weight: 700; padding: 3px 8px;
+  border-radius: 20px; display: flex; align-items: center; gap: 3px;
+}
+.kpi-trend.up   { background: var(--green-100); color: var(--green-700); }
+.kpi-trend.down { background: #fff0f0; color: var(--red); }
+
+.kpi-value {
+  font-size: 1.6rem; font-weight: 800; color: var(--slate-900);
+  line-height: 1; margin-bottom: 4px;
+  font-family: 'Fraunces', serif;
+}
+.kpi-label { font-size: 0.75rem; color: var(--slate-400); font-weight: 500; }
+.kpi-sub   { font-size: 0.72rem; color: var(--slate-500); margin-top: 8px; }
+
+/* mini sparkline */
+.sparkline { margin-top: 10px; }
+.spark-bar-row { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
+.spark-bar {
+  flex: 1; border-radius: 2px; background: var(--green-100);
+  transition: height 0.3s;
+}
+.spark-bar.active { background: var(--green-400); }
+
+/* ─── CART PANEL ─────────────────────────────── */
+.cart-panel {
+  background: var(--white); border-radius: var(--radius-xl);
+  border: 1.5px solid var(--slate-100); box-shadow: var(--shadow-sm);
+  padding: 24px; display: flex; flex-direction: column;
+  position: sticky; top: 100px; max-height: calc(100vh - 130px);
+  overflow: hidden;
+}
+
+.cart-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.cart-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem; font-weight: 600; color: var(--slate-900);
+  display: flex; align-items: center; gap: 10px;
+}
+.cart-count-chip {
+  background: var(--green-500); color: var(--white);
+  font-size: 0.7rem; font-weight: 700; padding: 2px 8px;
+  border-radius: 20px; font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.cart-clear {
+  font-size: 0.75rem; color: var(--slate-400); cursor: pointer;
+  text-decoration: none; transition: color 0.2s;
+}
+.cart-clear:hover { color: var(--red); }
+
+/* delivery banner */
+.delivery-banner {
+  background: var(--green-50); border: 1px dashed var(--green-300);
+  border-radius: var(--radius-md); padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.78rem; color: var(--green-700); margin-bottom: 16px;
+}
+.delivery-progress {
+  height: 4px; background: var(--slate-100); border-radius: 2px; margin-top: 6px;
+}
+.delivery-fill { height: 100%; background: var(--green-400); border-radius: 2px; width: 60%; }
+
+/* cart items */
+.cart-items { flex: 1; overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--slate-100) transparent; }
+.cart-items::-webkit-scrollbar { width: 4px; }
+.cart-items::-webkit-scrollbar-track { background: transparent; }
+.cart-items::-webkit-scrollbar-thumb { background: var(--slate-100); border-radius: 2px; }
+
+.cart-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--slate-100);
+}
+.cart-item:last-child { border-bottom: none; }
+
+.cart-item-img {
+  width: 52px; height: 52px; border-radius: var(--radius-sm);
+  background: var(--slate-50); display: flex; align-items: center;
+  justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+  border: 1px solid var(--slate-100);
+}
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-size: 0.82rem; font-weight: 600; color: var(--slate-900); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-weight { font-size: 0.72rem; color: var(--slate-400); }
+.cart-item-price { font-size: 0.875rem; font-weight: 700; color: var(--slate-900); flex-shrink: 0; }
+
+.cart-item-qty {
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.cart-qty-btn {
+  width: 22px; height: 22px; border-radius: 5px;
+  border: 1.5px solid var(--slate-200); background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; color: var(--slate-700);
+  transition: all 0.15s;
+}
+.cart-qty-btn:hover { background: var(--green-500); border-color: var(--green-500); color: var(--white); }
+.cart-qty-num { font-size: 0.8rem; font-weight: 700; min-width: 14px; text-align: center; }
+
+/* order summary */
+.order-summary { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--slate-100); }
+.summary-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.82rem; color: var(--slate-600); margin-bottom: 8px;
+}
+.summary-row.total {
+  font-size: 1rem; font-weight: 700; color: var(--slate-900);
+  padding-top: 10px; border-top: 1px solid var(--slate-100); margin-top: 4px;
+}
+
+.promo-input-row {
+  display: flex; gap: 8px; margin: 12px 0;
+}
+.promo-input {
+  flex: 1; padding: 9px 12px; border: 1.5px solid var(--slate-100);
+  border-radius: var(--radius-sm); font-family: inherit; font-size: 0.8rem;
+  outline: none; transition: border-color 0.2s;
+}
+.promo-input:focus { border-color: var(--green-400); }
+.btn-apply {
+  background: var(--slate-900); color: var(--white); border: none;
+  padding: 9px 16px; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+}
+.btn-apply:hover { background: var(--green-700); }
+
+.btn-checkout {
+  width: 100%; background: var(--green-500); color: var(--white);
+  border: none; padding: 14px; border-radius: var(--radius-md);
+  font-family: inherit; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; margin-top: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-checkout:hover { background: var(--green-600); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+.payment-icons {
+  display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap;
+}
+.pay-icon {
+  background: var(--slate-100); border-radius: 4px; padding: 4px 8px;
+  font-size: 0.65rem; font-weight: 700; color: var(--slate-500); letter-spacing: 0.05em;
+}
+
+/* ─── OFFER STRIP ────────────────────────────── */
+.offer-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  margin-bottom: 28px;
+}
+.offer-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 18px 20px; border: 1.5px solid var(--slate-100);
+  display: flex; align-items: center; gap: 14px; cursor: pointer;
+  transition: all 0.2s;
+}
+.offer-card:hover { border-color: var(--green-300); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.offer-icon { font-size: 2rem; flex-shrink: 0; }
+.offer-title { font-size: 0.85rem; font-weight: 700; color: var(--slate-900); margin-bottom: 2px; }
+.offer-desc  { font-size: 0.75rem; color: var(--slate-400); }
+
+/* ─── FOOTER ─────────────────────────────────── */
+footer {
+  background: var(--green-900); color: rgba(255,255,255,0.7);
+  padding: 50px 28px 28px; margin-top: auto;
+}
+.footer-inner {
+  max-width: 1320px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-brand { }
+.footer-logo { font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--white); font-weight: 600; margin-bottom: 12px; }
+.footer-logo span { color: var(--green-300); }
+.footer-tagline { font-size: 0.8rem; line-height: 1.7; max-width: 240px; }
+.footer-col h4 { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 9px; }
+.footer-col ul li a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+.footer-col ul li a:hover { color: var(--green-300); }
+.footer-bottom {
+  max-width: 1320px; margin: 0 auto;
+  padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.75rem;
+}
+.app-badges { display: flex; gap: 10px; }
+.app-badge {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  padding: 7px 14px; border-radius: var(--radius-sm); font-size: 0.7rem;
+  color: var(--white); font-weight: 600; cursor: pointer; transition: background 0.2s;
+}
+.app-badge:hover { background: rgba(255,255,255,0.18); }
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 1100px) {
+  .main-layout { grid-template-columns: 220px 1fr; }
+  .cart-panel { display: none; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .main-layout { grid-template-columns: 1fr; padding: 16px; }
+  .sidebar { display: none; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .quick-cats { grid-template-columns: repeat(4, 1fr); }
+  .offer-strip { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-banner { padding: 24px; }
+  .hero-title { font-size: 1.5rem; }
+  .hero-emojis { font-size: 3rem; }
+}
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.product-card { animation: fadeInUp 0.4s ease both; }
+.product-card:nth-child(1) { animation-delay: 0.05s; }
+.product-card:nth-child(2) { animation-delay: 0.10s; }
+.product-card:nth-child(3) { animation-delay: 0.15s; }
+.product-card:nth-child(4) { animation-delay: 0.20s; }
+.product-card:nth-child(5) { animation-delay: 0.25s; }
+.product-card:nth-child(6) { animation-delay: 0.30s; }
+
+.kpi-card { animation: fadeInUp 0.4s ease both; }
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.10s; }
+.kpi-card:nth-child(3) { animation-delay: 0.15s; }
+.kpi-card:nth-child(4) { animation-delay: 0.20s; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  🚚 Free delivery on orders over <span>₹499</span> &nbsp;·&nbsp; Use code <span>FRESH20</span> for 20% off your first order
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🛒</div>
+      <div class="logo-text">Fresh<span>Mart</span></div>
+    </a>
+
+    <div class="header-location">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      Bengaluru, 560001 ▾
+    </div>
+
+    <div class="search-bar">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search fruits, vegetables, dairy…">
+    </div>
+
+    <div class="header-actions">
+      <a href="#" class="btn-icon" title="Wishlist">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="badge">3</span>
+      </a>
+      <a href="#" class="btn-icon" title="Notifications">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge">5</span>
+      </a>
+      <a href="#" class="btn-icon" title="Account">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <button class="btn-primary">
+        🛒 Cart · ₹1,246
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORY NAV -->
+<nav class="cat-nav">
+  <div class="cat-nav-inner">
+    <button class="cat-btn active">🛒 All</button>
+    <button class="cat-btn">🥦 Vegetables</button>
+    <button class="cat-btn">🍎 Fruits</button>
+    <button class="cat-btn">🥛 Dairy & Eggs</button>
+    <button class="cat-btn">🍗 Meat & Seafood</button>
+    <button class="cat-btn">🍞 Bakery</button>
+    <button class="cat-btn">🥤 Beverages</button>
+    <button class="cat-btn">🧴 Personal Care</button>
+    <button class="cat-btn">🏠 Household</button>
+    <button class="cat-btn">🧆 Snacks</button>
+    <button class="cat-btn">🥫 Pantry</button>
+    <button class="cat-btn">❄️ Frozen</button>
+  </div>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <div class="promo-sidebar">
+      <h3>Fresh Organics Week</h3>
+      <p>30% off all certified organic produce. Limited time only.</p>
+      <button class="btn-white">Shop Now →</button>
+    </div>
+
+    <div class="sidebar-card">
+      <p class="sidebar-title">Filters</p>
+
+      <div class="filter-group">
+        <span class="filter-label">Category</span>
+        <label class="filter-option"><input type="checkbox" checked> Vegetables <span class="filter-count">124</span></label>
+        <label class="filter-option"><input type="checkbox"> Fruits <span class="filter-count">89</span></label>
+        <label class="filter-option"><input type="checkbox"> Dairy & Eggs <span class="filter-count">56</span></label>
+        <label class="filter-option"><input type="checkbox"> Bakery <span class="filter-count">43</span></label>
+        <label class="filter-option"><input type="checkbox"> Snacks <span class="filter-count">201</span></label>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Dietary</span>
+        <label class="filter-option"><input type="checkbox"> Organic</label>
+        <label class="filter-option"><input type="checkbox"> Vegan</label>
+        <label class="filter-option"><input type="checkbox"> Gluten-Free</label>
+        <label class="filter-option"><input type="checkbox"> Low-Calorie</label>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Price Range (₹)</span>
+        <div class="price-range">
+          <input type="number" class="price-input" placeholder="Min" value="0">
+          <span>–</span>
+          <input type="number" class="price-input" placeholder="Max" value="500">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Rating</span>
+        <label class="filter-option"><input type="checkbox"> ⭐⭐⭐⭐⭐ 5.0</label>
+        <label class="filter-option"><input type="checkbox" checked> ⭐⭐⭐⭐ 4.0+</label>
+        <label class="filter-option"><input type="checkbox"> ⭐⭐⭐ 3.0+</label>
+      </div>
+
+      <button class="btn-primary" style="width:100%; margin-top:4px;">Apply Filters</button>
+    </div>
+
+    <div class="sidebar-card">
+      <p class="sidebar-title">Top Brands</p>
+      <label class="filter-option"><input type="checkbox" checked> Amul <span class="filter-count">34</span></label>
+      <label class="filter-option"><input type="checkbox"> Britannia <span class="filter-count">28</span></label>
+      <label class="filter-option"><input type="checkbox"> Nestlé <span class="filter-count">41</span></label>
+      <label class="filter-option"><input type="checkbox"> Fresho <span class="filter-count">67</span></label>
+      <label class="filter-option"><input type="checkbox"> ITC <span class="filter-count">19</span></label>
+    </div>
+
+  </aside>
+
+  <!-- ── CONTENT ── -->
+  <main class="content">
+
+    <!-- HERO -->
+    <div class="hero-banner">
+      <div class="hero-text">
+        <p class="hero-eyebrow">🌿 Weekly Fresh Deal</p>
+        <h1 class="hero-title">Farm-fresh produce,<br><em>delivered in 90 mins</em></h1>
+        <p class="hero-desc">Sourced directly from 200+ local farms. Guaranteed freshness or your money back.</p>
+        <button class="btn-light">Shop Fresh Deals →</button>
+      </div>
+      <div class="hero-emojis">🥬🍅<br>🥕🫑</div>
+    </div>
+
+    <!-- QUICK CATEGORIES -->
+    <div class="sec-header">
+      <h2 class="sec-title">Shop by Category</h2>
+      <a href="#" class="sec-link">All Categories →</a>
+    </div>
+    <div class="quick-cats">
+      <a href="#" class="quick-cat active">
+        <span class="quick-cat-icon">🥦</span>
+        <span class="quick-cat-name">Vegetables</span>
+      </a>
+      <a href="#" class="quick-cat">
+        <span class="quick-cat-icon">🍎</span>
+        <span class="quick-cat-name">Fruits</span>
+      </a>
+      <a href="#" class="quick-cat">
+        <span class="quick-cat-icon">🥛</span>
+        <span class="quick-cat-name">Dairy</span>
+      </a>
+      <a href="#" class="quick-cat">
+        <span class="quick-cat-icon">🍗</span>
+        <span class="quick-cat-name">Meat</span>
+      </a>
+      <a href="#" class="quick-cat">
+        <span class="quick-cat-icon">🍞</span>
+        <span class="quick-cat-name">Bakery</span>
+      </a>
+      <a href="#" class="quick-cat">
+        <span class="quick-cat-icon">🧆</span>
+        <span class="quick-cat-name">Snacks</span>
+      </a>
+    </div>
+
+    <!-- KPI DASHBOARD -->
+    <div class="kpi-section">
+      <div class="sec-header">
+        <h2 class="sec-title">Store Performance Dashboard</h2>
+        <span style="font-size:0.75rem;color:var(--slate-400);">Live · Updated just now</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon green">📦</div>
+            <span class="kpi-trend up">↑ 12.4%</span>
+          </div>
+          <div class="kpi-value">₹2.8L</div>
+          <div class="kpi-label">Today's Revenue</div>
+          <div class="kpi-sub">vs ₹2.5L yesterday</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:40%"></div>
+              <div class="spark-bar" style="height:60%"></div>
+              <div class="spark-bar" style="height:45%"></div>
+              <div class="spark-bar" style="height:80%"></div>
+              <div class="spark-bar" style="height:55%"></div>
+              <div class="spark-bar" style="height:70%"></div>
+              <div class="spark-bar active" style="height:90%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon blue">🛒</div>
+            <span class="kpi-trend up">↑ 8.2%</span>
+          </div>
+          <div class="kpi-value">1,842</div>
+          <div class="kpi-label">Orders Today</div>
+          <div class="kpi-sub">Avg ₹152 per order (AOV)</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:50%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:65%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:55%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:75%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:60%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:85%;background:#c8e6ff"></div>
+              <div class="spark-bar active" style="height:95%;background:#4aa8ff"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon amber">⭐</div>
+            <span class="kpi-trend up">↑ 0.3</span>
+          </div>
+          <div class="kpi-value">4.87</div>
+          <div class="kpi-label">Customer Satisfaction</div>
+          <div class="kpi-sub">From 3,240 reviews this month</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:75%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:80%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:78%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:85%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:88%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:90%;background:#fff0c8"></div>
+              <div class="spark-bar active" style="height:97%;background:#f59e0b"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon purple">🏃</div>
+            <span class="kpi-trend down">↓ 2 min</span>
+          </div>
+          <div class="kpi-value">38 min</div>
+          <div class="kpi-label">Avg Delivery Time</div>
+          <div class="kpi-sub">Target: 45 min · On track ✅</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:80%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:70%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:85%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:65%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:75%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:60%;background:#e8dcff"></div>
+              <div class="spark-bar active" style="height:50%;background:#9b59b6"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon green">👥</div>
+            <span class="kpi-trend up">↑ 5.1%</span>
+          </div>
+          <div class="kpi-value">68.4%</div>
+          <div class="kpi-label">Repeat Customer Rate</div>
+          <div class="kpi-sub">Industry avg: 45% · Excellent</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:55%"></div>
+              <div class="spark-bar" style="height:58%"></div>
+              <div class="spark-bar" style="height:60%"></div>
+              <div class="spark-bar" style="height:63%"></div>
+              <div class="spark-bar" style="height:65%"></div>
+              <div class="spark-bar" style="height:66%"></div>
+              <div class="spark-bar active" style="height:68%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon amber">📉</div>
+            <span class="kpi-trend down">↓ 1.2%</span>
+          </div>
+          <div class="kpi-value">2.3%</div>
+          <div class="kpi-label">Cart Abandonment</div>
+          <div class="kpi-sub">Industry avg: 7% · Outstanding</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:80%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:72%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:65%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:58%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:52%;background:#fff0c8"></div>
+              <div class="spark-bar" style="height:40%;background:#fff0c8"></div>
+              <div class="spark-bar active" style="height:23%;background:#f59e0b"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon blue">💰</div>
+            <span class="kpi-trend up">↑ 3.8%</span>
+          </div>
+          <div class="kpi-value">22.6%</div>
+          <div class="kpi-label">Gross Margin</div>
+          <div class="kpi-sub">Monthly profit: ₹14.2L</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:55%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:58%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:60%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:62%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:65%;background:#c8e6ff"></div>
+              <div class="spark-bar" style="height:68%;background:#c8e6ff"></div>
+              <div class="spark-bar active" style="height:75%;background:#4aa8ff"></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <div class="kpi-icon purple">📦</div>
+            <span class="kpi-trend up">↑ 99.1%</span>
+          </div>
+          <div class="kpi-value">99.1%</div>
+          <div class="kpi-label">Order Fulfilment Rate</div>
+          <div class="kpi-sub">9 items out-of-stock today</div>
+          <div class="sparkline">
+            <div class="spark-bar-row">
+              <div class="spark-bar" style="height:90%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:92%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:91%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:94%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:96%;background:#e8dcff"></div>
+              <div class="spark-bar" style="height:98%;background:#e8dcff"></div>
+              <div class="spark-bar active" style="height:99%;background:#9b59b6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFER STRIP -->
+    <div class="offer-strip">
+      <div class="offer-card">
+        <div class="offer-icon">🚀</div>
+        <div>
+          <div class="offer-title">Express Delivery</div>
+          <div class="offer-desc">Get groceries in 90 minutes flat</div>
+        </div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-icon">🔄</div>
+        <div>
+          <div class="offer-title">Subscribe & Save</div>
+          <div class="offer-desc">Auto-refill essentials, save up to 15%</div>
+        </div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-icon">🏆</div>
+        <div>
+          <div class="offer-title">Freshness Guarantee</div>
+          <div class="offer-desc">Not fresh? Full refund, no questions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="sec-header">
+      <h2 class="sec-title">Fresh Picks Today</h2>
+      <a href="#" class="sec-link">View All →</a>
+    </div>
+    <div class="products-grid">
+
+      <!-- Product 1 -->
+      <div class="product-card">
+        <span class="product-badge badge-organic">Organic</span>
+        <span class="product-wishlist">♡</span>
+        <div class="product-img">🥦</div>
+        <div class="product-body">
+          <p class="product-category">Vegetables</p>
+          <h3 class="product-name">Fresh Broccoli</h3>
+          <p class="product-weight">500g · Farm Fresh</p>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(284)</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">₹89</span>
+              <span class="product-price-old">₹110</span>
+            </div>
+            <button class="add-btn" onclick="this.parentElement.parentElement.querySelector('.qty-ctrl') && this.style.display='none'">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card">
+        <span class="product-badge badge-sale">−20%</span>
+        <span class="product-wishlist">♡</span>
+        <div class="product-img">🍅</div>
+        <div class="product-body">
+          <p class="product-category">Vegetables</p>
+          <h3 class="product-name">Cherry Tomatoes</h3>
+          <p class="product-weight">250g · Hydroponic</p>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(192)</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">₹64</span>
+              <span class="product-price-old">₹80</span>
+            </div>
+            <div class="qty-ctrl">
+              <button class="qty-btn">−</button>
+              <span class="qty-num">2</span>
+              <button class="qty-btn">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card">
+        <span class="product-badge badge-new">New</span>
+        <span class="product-wishlist">♡</span>
+        <div class="product-img">🥕</div>
+        <div class="product-body">
+          <p class="product-category">Vegetables</p>
+          <h3 class="product-name">Baby Carrots</h3>
+          <p class="product-weight">400g · Premium</p>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(97)</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">₹55</span>
+            </div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="product-card">
+        <span class="product-badge badge-sale">−15%</span>
+        <span class="product-wishlist">♡</span>
+        <div class="product-img">🍎</div>
+        <div class="product-body">
+          <p class="product-category">Fruits</p>
+          <h3 class="product-name">Royal Gala Apples</h3>
+          <p class="product-weight">1 kg · Imported</p>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(431)</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">₹149</span>
+              <span class="product-price-old">₹175</span>
+            </div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="product-card">
+        <span class="product-badge badge-organic">Organic</span>
+        <span class="product-wishlist">♡</span>
+        <div class="product-img">🥛</div>
+        <div class="product-body">
+          <p class="product-category">Dairy</p>
+          <h3 class="product-name">Full Cream Milk</h3>
+          <p class="product-weight">1 litre · Amul</p>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">(1.2k)</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">₹62</span>
+            </div>
+            <div class="qty-ctrl">
+              <button class="qty-btn">−</button>
+              <span class="qty-num">1</span>
+              <button class="qty-btn">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="product-card">
+        <span class="product-badge badge-sale">−30%</span>
+        <span class="product-wishlist">♡</span>
+        <div class="product-img">🍞</div>
+        <div class="product-body">
+          <p class="product-category">Bakery</p>
+          <h3 class="product-name">Multigrain Bread</h3>
+          <p class="product-weight">400g · Britannia</p>
+          <div class="product-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="rating-count">(345)</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">₹42</span>
+              <span class="product-price-old">₹60</span>
+            </div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /products-grid -->
+
+  </main><!-- /content -->
+
+  <!-- ── CART PANEL ── -->
+  <aside>
+    <div class="cart-panel">
+      <div class="cart-header">
+        <div class="cart-title">
+          My Cart
+          <span class="cart-count-chip">5 items</span>
+        </div>
+        <a href="#" class="cart-clear">Clear all</a>
+      </div>
+
+      <div class="delivery-banner">
+        <span>🚚</span>
+        <div>
+          <div>Add <strong>₹200</strong> more for free delivery!</div>
+          <div class="delivery-progress"><div class="delivery-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="cart-items">
+        <div class="cart-item">
+          <div class="cart-item-img">🍅</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">Cherry Tomatoes</div>
+            <div class="cart-item-weight">250g</div>
+            <div class="cart-item-qty" style="margin-top:5px">
+              <button class="cart-qty-btn">−</button>
+              <span class="cart-qty-num">2</span>
+              <button class="cart-qty-btn">+</button>
+            </div>
+          </div>
+          <div class="cart-item-price">₹128</div>
+        </div>
+        <div class="cart-item">
+          <div class="cart-item-img">🥛</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">Full Cream Milk</div>
+            <div class="cart-item-weight">1 litre</div>
+            <div class="cart-item-qty" style="margin-top:5px">
+              <button class="cart-qty-btn">−</button>
+              <span class="cart-qty-num">1</span>
+              <button class="cart-qty-btn">+</button>
+            </div>
+          </div>
+          <div class="cart-item-price">₹62</div>
+        </div>
+        <div class="cart-item">
+          <div class="cart-item-img">🍎</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">Royal Gala Apples</div>
+            <div class="cart-item-weight">1 kg</div>
+            <div class="cart-item-qty" style="margin-top:5px">
+              <button class="cart-qty-btn">−</button>
+              <span class="cart-qty-num">1</span>
+              <button class="cart-qty-btn">+</button>
+            </div>
+          </div>
+          <div class="cart-item-price">₹149</div>
+        </div>
+        <div class="cart-item">
+          <div class="cart-item-img">🥦</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">Fresh Broccoli</div>
+            <div class="cart-item-weight">500g</div>
+            <div class="cart-item-qty" style="margin-top:5px">
+              <button class="cart-qty-btn">−</button>
+              <span class="cart-qty-num">2</span>
+              <button class="cart-qty-btn">+</button>
+            </div>
+          </div>
+          <div class="cart-item-price">₹178</div>
+        </div>
+        <div class="cart-item">
+          <div class="cart-item-img">🍞</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">Multigrain Bread</div>
+            <div class="cart-item-weight">400g</div>
+            <div class="cart-item-qty" style="margin-top:5px">
+              <button class="cart-qty-btn">−</button>
+              <span class="cart-qty-num">1</span>
+              <button class="cart-qty-btn">+</button>
+            </div>
+          </div>
+          <div class="cart-item-price">₹42</div>
+        </div>
+      </div>
+
+      <div class="order-summary">
+        <div class="promo-input-row">
+          <input type="text" class="promo-input" placeholder="Promo code (e.g. FRESH20)">
+          <button class="btn-apply">Apply</button>
+        </div>
+        <div class="summary-row"><span>Subtotal (5 items)</span><span>₹1,246</span></div>
+        <div class="summary-row"><span>Delivery fee</span><span style="color:var(--green-500)">₹30</span></div>
+        <div class="summary-row"><span>Discount (FRESH20)</span><span style="color:var(--red)">−₹249</span></div>
+        <div class="summary-row"><span>Platform fee</span><span>₹5</span></div>
+        <div class="summary-row total"><span>Total</span><span>₹1,032</span></div>
+        <button class="btn-checkout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Proceed to Checkout
+        </button>
+        <div class="payment-icons">
+          <span class="pay-icon">VISA</span>
+          <span class="pay-icon">MC</span>
+          <span class="pay-icon">UPI</span>
+          <span class="pay-icon">GPay</span>
+          <span class="pay-icon">COD</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /main-layout -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Fresh<span>Mart</span></div>
+      <p class="footer-tagline">Your neighbourhood supermarket, now online. Fresh produce sourced daily from 200+ local farms across India.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Vegetables</a></li>
+        <li><a href="#">Fruits</a></li>
+        <li><a href="#">Dairy & Eggs</a></li>
+        <li><a href="#">Meat & Fish</a></li>
+        <li><a href="#">Bakery</a></li>
+        <li><a href="#">Beverages</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns Policy</a></li>
+        <li><a href="#">Freshness Guarantee</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About FreshMart</a></li>
+        <li><a href="#">Partner Farms</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 FreshMart Pvt. Ltd. All rights reserved.</span>
+    <div class="app-badges">
+      <div class="app-badge">📱 App Store</div>
+      <div class="app-badge">🤖 Google Play</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Category nav active toggle
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Quick category toggle
+  document.querySelectorAll('.quick-cat').forEach(cat => {
+    cat.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.quick-cat').forEach(c => c.classList.remove('active'));
+      cat.classList.add('active');
+    });
+  });
+
+  // Add to cart button → qty control
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const footer = btn.parentElement;
+      btn.style.display = 'none';
+      const ctrl = document.createElement('div');
+      ctrl.className = 'qty-ctrl';
+      ctrl.innerHTML = `<button class="qty-btn">−</button><span class="qty-num">1</span><button class="qty-btn">+</button>`;
+      footer.appendChild(ctrl);
+      const [minus, plus] = ctrl.querySelectorAll('.qty-btn');
+      const num = ctrl.querySelector('.qty-num');
+      plus.addEventListener('click', () => { num.textContent = parseInt(num.textContent) + 1; });
+      minus.addEventListener('click', () => {
+        const v = parseInt(num.textContent) - 1;
+        if (v < 1) { ctrl.remove(); btn.style.display = ''; }
+        else num.textContent = v;
+      });
+    });
+  });
+
+  // Existing qty controls
+  document.querySelectorAll('.qty-ctrl').forEach(ctrl => {
+    const [minus, plus] = ctrl.querySelectorAll('.qty-btn');
+    const num = ctrl.querySelector('.qty-num');
+    if (!minus || !plus) return;
+    plus.addEventListener('click', () => { num.textContent = parseInt(num.textContent) + 1; });
+    minus.addEventListener('click', () => {
+      const v = parseInt(num.textContent) - 1;
+      if (v >= 1) num.textContent = v;
+    });
+  });
+
+  // Cart qty controls
+  document.querySelectorAll('.cart-qty-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('.cart-item-qty');
+      const num = row.querySelector('.cart-qty-num');
+      const delta = btn.textContent === '+' ? 1 : -1;
+      const v = Math.max(1, parseInt(num.textContent) + delta);
+      num.textContent = v;
+    });
+  });
+
+  // Wishlist toggle
+  document.querySelectorAll('.product-wishlist').forEach(w => {
+    w.addEventListener('click', () => {
+      w.textContent = w.textContent === '♡' ? '❤️' : '♡';
+    });
+  });
+</script>
+</body>
+</html>

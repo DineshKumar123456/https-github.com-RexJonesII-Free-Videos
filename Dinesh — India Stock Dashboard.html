@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Dinesh — India Stock Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#14181f;--mu:#667085;--bd:#e3e6ec;--up:#0f9d63;--dn:#d64545;--ac:#3b6cf6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c25;--tx:#e8ebf1;--mu:#8b93a3;--bd:#2a3040;--up:#34d399;--dn:#f87171;--ac:#7c9cff}}
+:root[data-theme="dark"]{--bg:#0f1218;--card:#181c25;--tx:#e8ebf1;--mu:#8b93a3;--bd:#2a3040;--up:#34d399;--dn:#f87171;--ac:#7c9cff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px}
+h1{font-size:20px;margin:0}.sub{color:var(--mu);margin:2px 0 14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.k,.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+.k b{display:block;font-size:19px}.k span{color:var(--mu);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;align-items:center}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:4px 12px;cursor:pointer}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:12px}
+.card h2{font-size:14px;margin:0 0 2px}.card p{margin:0 0 8px;color:var(--mu);font-size:12px}
+.box{position:relative;height:290px}.tg{float:right;display:flex;gap:4px}.tg button{padding:1px 9px;font-size:12px}
+.up{color:var(--up)}.dn{color:var(--dn)}footer{color:var(--mu);font-size:12px;margin-top:14px}
+</style></head><body>
+<h1>🇮🇳 Dinesh — India Stock Dashboard</h1>
+<div class="sub">NSE top 15 snapshot + 8-stock portfolio · 10 interactive charts · hover for details, filter by sector, click a sector slice</div>
+<div class="kpis" id="kpis"></div>
+<div class="chips" id="chips"></div>
+<div class="grid">
+<div class="card"><h2>1 · Day change % by stock</h2><p>Tata Motors leads; laggards are still positive.</p><div class="box"><canvas id="c1"></canvas></div></div>
+<div class="card"><h2>2 · Trading volume (lakh shares)</h2><p>Where the liquidity is, coloured by sector.</p><div class="box"><canvas id="c2"></canvas></div></div>
+<div class="card"><h2>3 · Volume share by sector</h2><p>Click a slice to filter the sector-aware charts.</p><div class="box"><canvas id="c3"></canvas></div></div>
+<div class="card"><h2>4 · Intraday range vs previous close</h2><p>Bars = low→high as % of prev close; ◆ = last price.</p><div class="box"><canvas id="c4"></canvas></div></div>
+<div class="card"><h2>5 · Price vs momentum (bubble = volume)</h2><p>Log price axis; high, cheap and busy stocks stand out.</p><div class="box"><canvas id="c5"></canvas></div></div>
+<div class="card"><h2>6 · Portfolio: invested vs current (₹)</h2><p>Every holding is in profit.</p><div class="box"><canvas id="c6"></canvas></div></div>
+<div class="card"><h2>7 · P&amp;L waterfall (₹)</h2><p>How each holding builds the total gain.</p><div class="box"><canvas id="c7"></canvas></div></div>
+<div class="card"><h2>8 · Portfolio allocation <span class="tg" id="tg"><button data-k="cur" class="on">Current</button><button data-k="inv">Invested</button><button data-k="pl">P&amp;L</button></span></h2><p>Switch the basis to see concentration shift.</p><div class="box"><canvas id="c8"></canvas></div></div>
+<div class="card"><h2>9 · Sector strength radar</h2><p>Average day change % per sector.</p><div class="box"><canvas id="c9"></canvas></div></div>
+<div class="card"><h2>10 · Opening gap vs intraday move (%)</h2><p>Gap = open vs prev close; intraday = last vs open.</p><div class="box"><canvas id="c10"></canvas></div></div>
+</div>
+<footer>Source: Dinesh_India_Stock_Dashboard.xlsx. Note: the sheet's header KPIs (₹28.4L value / ₹27.5L invested) don't match the Portfolio Tracker totals used here (₹11.89L / ₹10.48L).</footer>
+<script>
+const S=[["RELIANCE","Energy",2891.45,2840,2910.2,2835.5,2850.3,245.3],["TCS","IT",4021.7,3980,4055,3972,3995.1,132.8],["HDFCBANK","Banking",1723.85,1700,1738,1698.5,1709.4,318.6],["INFY","IT",1589.3,1560,1601.5,1555.2,1571.8,198.4],["ICICIBANK","Banking",1342.6,1318,1357,1315,1325.9,276.1],["HINDUNILVR","FMCG",2487.15,2460,2498,2452,2471.3,89.2],["SBIN","Banking",841.2,820,852.4,818.5,826.75,412.7],["BHARTIARTL","Telecom",1698.5,1670,1715,1665,1678.2,156.3],["TATAMOTORS","Auto",1024.8,985,1038.5,982,983.55,523.9],["LT","Infra",3587.4,3540,3612,3535,3561.2,78.4],["BAJFINANCE","NBFC",7124.6,7050,7189,7040,7082.3,64.2],["AXISBANK","Banking",1189.75,1165,1202,1162,1174.4,234.5],["MARUTI","Auto",12840,12680,12920,12650,12745.5,22.1],["WIPRO","IT",512.3,505,518.5,503.5,507.85,287.6],["ADANIENT","Conglomerate",3241.7,3180,3275,3170,3210.4,112.8]];
+const P=[["RELIANCE",50,2450,2891.45],["TCS",25,3800,4021.7],["HDFCBANK",100,1620,1723.85],["INFY",75,1480,1589.3],["TATAMOTORS",200,720,1024.8],["SBIN",150,780,841.2],["ICICIBANK",80,1150,1342.6],["BAJFINANCE",30,6800,7124.6]];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+Chart.defaults.color=css('--mu');Chart.defaults.borderColor=css('--bd');Chart.defaults.font.size=11;Chart.defaults.maintainAspectRatio=false;
+const UP=css('--up'),DN=css('--dn'),AC=css('--ac');
+const PAL=['#3b6cf6','#f59e0b','#10b981','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16','#f97316'];
+const SEC=[...new Set(S.map(s=>s[1]))],sc=s=>PAL[SEC.indexOf(s)];
+const D=S.map(([sym,sec,l,o,h,lo,p,v])=>({sym,sec,l,o,h,lo,p,v,chg:(l/p-1)*100,gap:(o/p-1)*100,intra:(l/o-1)*100}));
+const PF=P.map(([sym,q,b,l])=>({sym,inv:q*b,cur:q*l,pl:q*(l-b),pct:(l/b-1)*100}));
+const sum=(a,k)=>a.reduce((t,x)=>t+x[k],0),inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+let sector='All',C={};
+const rows=()=>D.filter(d=>sector==='All'||d.sec===sector);
+const mk=(id,cfg)=>{C[id]&&C[id].destroy();C[id]=new Chart(document.getElementById(id),cfg)};
+const pctAx={ticks:{callback:v=>v+'%'}};
+const noLeg={legend:{display:false}};
+const TI=sum(PF,'inv'),TC=sum(PF,'cur');
+document.getElementById('kpis').innerHTML=[
+['Avg day change','+'+(sum(D,'chg')/D.length).toFixed(2)+'%','up'],
+['Advancers',D.filter(d=>d.chg>0).length+' / '+D.length,''],
+['Total volume',sum(D,'v').toFixed(0)+' L',''],
+['Invested',inr(TI),''],['Current value',inr(TC),''],
+['Total P&L',inr(TC-TI),'up'],['Return','+'+((TC/TI-1)*100).toFixed(1)+'%','up']
+].map(k=>`<div class="k"><span>${k[0]}</span><b class="${k[2]}">${k[1]}</b></div>`).join('');
+function chips(){document.getElementById('chips').innerHTML='<span style="color:var(--mu)">Sector:</span>'+['All',...SEC].map(s=>`<button class="${s===sector?'on':''}" data-s="${s}">${s}</button>`).join('')}
+document.getElementById('chips').onclick=e=>{if(e.target.dataset.s){sector=e.target.dataset.s;render()}};
+function render(){
+chips();const r=rows();
+const a=[...r].sort((x,y)=>y.chg-x.chg);
+mk('c1',{type:'bar',data:{labels:a.map(d=>d.sym),datasets:[{data:a.map(d=>d.chg),backgroundColor:a.map(d=>d.chg>=0?UP:DN)}]},options:{indexAxis:'y',plugins:{...noLeg,tooltip:{callbacks:{label:c=>`${c.parsed.x.toFixed(2)}% · ₹${a[c.dataIndex].l}`}}},scales:{x:pctAx}}});
+const v=[...r].sort((x,y)=>y.v-x.v);
+mk('c2',{type:'bar',data:{labels:v.map(d=>d.sym),datasets:[{data:v.map(d=>d.v),backgroundColor:v.map(d=>sc(d.sec))}]},options:{plugins:{...noLeg,tooltip:{callbacks:{label:c=>`${c.parsed.y} L · ${v[c.dataIndex].sec}`}}},scales:{x:{ticks:{maxRotation:60}}}}});
+mk('c4',{type:'bar',data:{labels:r.map(d=>d.sym),datasets:[{label:'Day range %',data:r.map(d=>[(d.lo/d.p-1)*100,(d.h/d.p-1)*100]),backgroundColor:AC+'66',borderColor:AC,borderWidth:1,borderSkipped:false},{type:'line',label:'Last',data:r.map(d=>d.chg),showLine:false,pointStyle:'rectRot',pointRadius:6,backgroundColor:UP,borderColor:UP}]},options:{scales:{y:pctAx,x:{ticks:{maxRotation:60}}}}});
+mk('c5',{type:'bubble',data:{datasets:SEC.filter(s=>r.some(d=>d.sec===s)).map(s=>({label:s,backgroundColor:sc(s)+'99',borderColor:sc(s),data:r.filter(d=>d.sec===s).map(d=>({x:d.l,y:d.chg,r:4+d.v/35,d}))}))},options:{scales:{x:{type:'logarithmic',title:{display:true,text:'Last price ₹ (log)'}},y:{...pctAx,title:{display:true,text:'Day change'}}},plugins:{tooltip:{callbacks:{label:c=>{const d=c.raw.d;return `${d.sym}: ₹${d.l} · ${d.chg.toFixed(2)}% · ${d.v} L`}}}}}});
+mk('c10',{type:'bar',data:{labels:r.map(d=>d.sym),datasets:[{label:'Opening gap',data:r.map(d=>d.gap),backgroundColor:'#f59e0b'},{label:'Intraday move',data:r.map(d=>d.intra),backgroundColor:AC}]},options:{scales:{x:{stacked:true,ticks:{maxRotation:60}},y:{stacked:true,...pctAx}}}});
+}
+mk('c3',{type:'doughnut',data:{labels:SEC,datasets:[{data:SEC.map(s=>sum(D.filter(d=>d.sec===s),'v')),backgroundColor:PAL}]},options:{onClick:(e,el)=>{if(el.length){const s=SEC[el[0].index];sector=sector===s?'All':s;render()}},plugins:{legend:{position:'right'},tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed.toFixed(0)} L`}}}}});
+mk('c6',{type:'bar',data:{labels:PF.map(p=>p.sym),datasets:[{label:'Invested',data:PF.map(p=>p.inv),backgroundColor:'#94a3b8'},{label:'Current',data:PF.map(p=>p.cur),backgroundColor:UP}]},options:{plugins:{tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${inr(c.parsed.y)}`,afterBody:i=>'Return: +'+PF[i[0].dataIndex].pct.toFixed(1)+'%'}}},scales:{y:{ticks:{callback:v=>'₹'+v/1000+'k'}},x:{ticks:{maxRotation:60}}}}});
+const w=[...PF].sort((x,y)=>y.pl-x.pl);let run=0;const wf=w.map(p=>{const s=run;run+=p.pl;return[s,run]});
+mk('c7',{type:'bar',data:{labels:[...w.map(p=>p.sym),'TOTAL'],datasets:[{data:[...wf,[0,run]],backgroundColor:[...w.map(()=>UP),AC]}]},options:{plugins:{...noLeg,tooltip:{callbacks:{label:c=>c.dataIndex<w.length?`${inr(w[c.dataIndex].pl)} (+${w[c.dataIndex].pct.toFixed(1)}%)`:'Total '+inr(run)}}},scales:{y:{ticks:{callback:v=>'₹'+v/1000+'k'}},x:{ticks:{maxRotation:60}}}}});
+function alloc(k){mk('c8',{type:'doughnut',data:{labels:PF.map(p=>p.sym),datasets:[{data:PF.map(p=>p[k]),backgroundColor:PAL}]},options:{plugins:{legend:{position:'right'},tooltip:{callbacks:{label:c=>{const t=sum(PF,k);return `${c.label}: ${inr(c.parsed)} (${(c.parsed/t*100).toFixed(1)}%)`}}}}}})}
+document.getElementById('tg').onclick=e=>{if(e.target.dataset.k){[...e.currentTarget.children].forEach(b=>b.classList.toggle('on',b===e.target));alloc(e.target.dataset.k)}};
+mk('c9',{type:'radar',data:{labels:SEC,datasets:[{label:'Avg change %',data:SEC.map(s=>{const x=D.filter(d=>d.sec===s);return +(sum(x,'chg')/x.length).toFixed(2)}),backgroundColor:AC+'44',borderColor:AC,pointBackgroundColor:AC}]},options:{plugins:noLeg,scales:{r:{beginAtZero:true,ticks:{backdropColor:'transparent'}}}}});
+alloc('cur');render();
+</script></body></html>

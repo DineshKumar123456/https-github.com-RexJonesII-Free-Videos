@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitPro — Gym Management App</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f3;
+    --bg-tertiary: #eeede8;
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6b68;
+    --text-tertiary: #a0a09c;
+    --border-light: rgba(0,0,0,0.1);
+    --border-medium: rgba(0,0,0,0.18);
+    --border-strong: rgba(0,0,0,0.28);
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-mid: #5DCAA5;
+    --green-dark: #0F6E56;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-tertiary); min-height: 100vh; color: var(--text-primary); font-size: 14px; line-height: 1.5; }
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* Topbar */
+  .topbar { background: var(--bg-primary); border-bottom: 0.5px solid var(--border-light); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+  .logo i { font-size: 22px; color: var(--green); }
+  .nav { display: flex; gap: 2px; }
+  .nav-btn { background: none; border: none; padding: 6px 11px; border-radius: var(--radius-md); font-size: 13px; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; transition: background 0.15s, color 0.15s; font-family: inherit; }
+  .nav-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+  .nav-btn.active { background: var(--bg-secondary); color: var(--green); font-weight: 500; }
+  .nav-btn i { font-size: 15px; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--green-dark); cursor: pointer; }
+  .bell-btn { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--text-secondary); padding: 4px; }
+
+  /* Content */
+  .content { flex: 1; padding: 1.5rem; max-width: 1100px; width: 100%; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* KPI Cards */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .kpi-card { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 1rem; cursor: pointer; transition: border 0.15s, box-shadow 0.15s; border: 0.5px solid transparent; }
+  .kpi-card:hover { border-color: var(--border-medium); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .kpi-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .kpi-label i { font-size: 14px; }
+  .kpi-value { font-size: 22px; font-weight: 600; color: var(--text-primary); }
+  .kpi-delta { font-size: 11px; margin-top: 4px; }
+  .kpi-delta.up { color: var(--green-dark); }
+  .kpi-delta.down { color: #D85A30; }
+  .kpi-delta.neutral { color: var(--text-secondary); }
+
+  /* Cards */
+  .card { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+  .card-title i { font-size: 16px; color: var(--green); }
+
+  /* Charts */
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  .bar-chart-wrap { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .bar { width: 100%; background: var(--green-light); border-radius: 3px 3px 0 0; transition: background 0.2s; cursor: pointer; }
+  .bar:hover { background: var(--green); }
+  .bar-lbl { font-size: 9px; color: var(--text-tertiary); margin-top: 4px; }
+  .donut-wrap { display: flex; align-items: center; gap: 16px; }
+  .donut-legend { flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 12px; color: var(--text-secondary); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Section title */
+  .section-title { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .section-title i { color: var(--green); font-size: 17px; }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { text-align: left; padding: 8px 12px; border-bottom: 0.5px solid var(--border-light); color: var(--text-secondary); font-weight: 500; font-size: 12px; }
+  .data-table td { padding: 10px 12px; border-bottom: 0.5px solid var(--border-light); color: var(--text-primary); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover td { background: var(--bg-secondary); }
+
+  /* Status pills */
+  .pill { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; display: inline-block; }
+  .pill-green { background: #E1F5EE; color: #0F6E56; }
+  .pill-amber { background: #FAEEDA; color: #854F0B; }
+  .pill-red { background: #FCEBEB; color: #A32D2D; }
+  .pill-blue { background: #E6F1FB; color: #185FA5; }
+  .pill-purple { background: #EEEDFE; color: #3C3489; }
+
+  /* Forms */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea { padding: 8px 10px; border-radius: var(--radius-md); border: 0.5px solid var(--border-medium); background: var(--bg-primary); color: var(--text-primary); font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s; }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--green); box-shadow: 0 0 0 2px rgba(29,158,117,0.12); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  /* Buttons */
+  .btn { padding: 8px 16px; border-radius: var(--radius-md); border: 0.5px solid var(--border-medium); font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-primary:hover { background: var(--green-dark); border-color: var(--green-dark); }
+  .btn-ghost { background: none; color: var(--text-secondary); }
+  .btn-ghost:hover { background: var(--bg-secondary); color: var(--text-primary); }
+  .btn-danger { background: none; color: #D85A30; border-color: #D85A30; }
+  .btn-danger:hover { background: #FAECE7; }
+  .btn-row { display: flex; gap: 8px; margin-top: 1rem; justify-content: flex-end; }
+
+  /* Tabs */
+  .tab-row { display: flex; gap: 2px; margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--border-light); }
+  .tab { background: none; border: none; padding: 8px 14px; font-size: 13px; cursor: pointer; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -0.5px; font-family: inherit; transition: color 0.15s; }
+  .tab.active { color: var(--green); border-bottom-color: var(--green); font-weight: 500; }
+  .tab:hover:not(.active) { color: var(--text-primary); }
+
+  /* Search */
+  .search-bar { display: flex; align-items: center; gap: 8px; background: var(--bg-primary); border: 0.5px solid var(--border-medium); border-radius: var(--radius-md); padding: 8px 12px; margin-bottom: 1rem; }
+  .search-bar i { color: var(--text-tertiary); font-size: 16px; }
+  .search-bar input { border: none; background: none; outline: none; font-size: 13px; color: var(--text-primary); flex: 1; font-family: inherit; }
+
+  /* Filter chips */
+  .filter-row { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .chip { padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 0.5px solid var(--border-medium); background: var(--bg-primary); color: var(--text-secondary); transition: all 0.15s; }
+  .chip:hover { border-color: var(--green); color: var(--green); }
+  .chip.active { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
+
+  /* Member cards */
+  .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .member-card { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 1rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+  .member-card:hover { border-color: var(--green); box-shadow: 0 2px 10px rgba(29,158,117,0.1); }
+  .m-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .m-name { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+  .m-plan { font-size: 12px; color: var(--text-secondary); }
+  .m-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .m-since { font-size: 11px; color: var(--text-tertiary); }
+
+  /* Plan cards */
+  .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1rem; }
+  .plan-card { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.1rem; cursor: pointer; transition: border-color 0.15s; }
+  .plan-card:hover { border-color: var(--green); }
+  .plan-card.selected { border: 2px solid var(--green); }
+  .plan-card .plan-name { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  .plan-card .plan-price { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+  .plan-card .plan-price span { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+  .plan-card .plan-features { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+  .popular-badge { font-size: 10px; background: var(--green-light); color: var(--green-dark); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: 4px; font-weight: 500; }
+
+  /* Schedule */
+  .schedule-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .day-col { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; }
+  .day-header { background: var(--bg-secondary); padding: 6px 4px; font-size: 11px; font-weight: 500; color: var(--text-secondary); text-align: center; border-bottom: 0.5px solid var(--border-light); }
+  .class-block { margin: 4px; padding: 5px 6px; border-radius: 5px; font-size: 10px; cursor: pointer; transition: opacity 0.15s; }
+  .class-block:hover { opacity: 0.75; }
+  .cb-yoga { background: #E1F5EE; color: #0F6E56; }
+  .cb-hiit { background: #FAECE7; color: #993C1D; }
+  .cb-spin { background: #EEEDFE; color: #3C3489; }
+  .cb-boxing { background: #FAEEDA; color: #854F0B; }
+  .cb-pilates { background: #FBEAF0; color: #72243E; }
+  .c-time { font-weight: 600; margin-bottom: 1px; font-size: 10px; }
+  .c-name { font-size: 9px; opacity: 0.85; }
+
+  /* Facilities */
+  .facility-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .facility-card { background: var(--bg-primary); border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 1rem; text-align: center; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+  .facility-card:hover { border-color: var(--green); box-shadow: 0 2px 10px rgba(29,158,117,0.1); }
+  .fac-icon { font-size: 28px; margin-bottom: 8px; }
+  .fac-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+  .progress-bar { height: 5px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s; }
+  .pf-green { background: var(--green); }
+  .pf-amber { background: #EF9F27; }
+  .pf-red { background: #E24B4A; }
+
+  /* Alerts */
+  .alert { padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .alert-success { background: #E1F5EE; color: #0F6E56; border: 0.5px solid #5DCAA5; }
+  .alert-warning { background: #FAEEDA; color: #854F0B; border: 0.5px solid #FAC775; }
+  .alert-info { background: #E6F1FB; color: #185FA5; border: 0.5px solid #85B7EB; }
+
+  /* Payment rows */
+  .pay-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 0.5px solid var(--border-light); }
+  .pay-row:last-child { border-bottom: none; }
+  .pay-info { display: flex; align-items: center; gap: 10px; }
+  .pay-icon { width: 34px; height: 34px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .pay-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .pay-date { font-size: 11px; color: var(--text-secondary); }
+  .pay-amount { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); align-items: center; justify-content: center; z-index: 200; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg-primary); border-radius: var(--radius-xl); padding: 2rem; width: 90%; max-width: 420px; border: 0.5px solid var(--border-medium); }
+  .modal-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 26px; color: var(--green); }
+  .modal-title { font-size: 16px; font-weight: 600; color: var(--text-primary); text-align: center; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 1.5rem; }
+  .modal-btns { display: flex; gap: 8px; justify-content: center; }
+
+  /* Order summary */
+  .order-box { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 1rem; margin-top: 12px; }
+  .order-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+  .order-divider { border: none; border-top: 0.5px solid var(--border-light); margin: 8px 0; }
+  .order-total { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+
+  /* Responsive */
+  @media (max-width: 800px) {
+    .nav { display: none; }
+    .chart-row { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .plan-grid { grid-template-columns: 1fr; }
+    .schedule-grid { grid-template-columns: repeat(4, 1fr); }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .mobile-nav { display: flex !important; }
+  }
+  .mobile-nav { display: none; background: var(--bg-primary); border-top: 0.5px solid var(--border-light); padding: 6px; gap: 2px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+  .mobile-nav .nav-btn { flex: 1; flex-direction: column; gap: 2px; font-size: 10px; padding: 6px 4px; justify-content: center; }
+  .mobile-nav .nav-btn i { font-size: 18px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="logo"><i class="ti ti-barbell"></i> FitPro</div>
+    <nav class="nav" aria-label="Main navigation">
+      <button class="nav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><i class="ti ti-layout-dashboard"></i> Dashboard</button>
+      <button class="nav-btn" onclick="showPage('members')" id="nav-members"><i class="ti ti-users"></i> Members</button>
+      <button class="nav-btn" onclick="showPage('enroll')" id="nav-enroll"><i class="ti ti-user-plus"></i> Enroll</button>
+      <button class="nav-btn" onclick="showPage('schedule')" id="nav-schedule"><i class="ti ti-calendar"></i> Schedule</button>
+      <button class="nav-btn" onclick="showPage('payments')" id="nav-payments"><i class="ti ti-credit-card"></i> Payments</button>
+      <button class="nav-btn" onclick="showPage('facilities')" id="nav-facilities"><i class="ti ti-building"></i> Facilities</button>
+      <button class="nav-btn" onclick="showPage('reports')" id="nav-reports"><i class="ti ti-chart-bar"></i> Reports</button>
+    </nav>
+    <div class="topbar-right">
+      <button class="bell-btn" aria-label="Notifications"><i class="ti ti-bell"></i></button>
+      <div class="avatar" title="Gym Counsellor">GC</div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <button class="nav-btn active" onclick="showPage('dashboard')" id="mnav-dashboard"><i class="ti ti-layout-dashboard"></i>Home</button>
+    <button class="nav-btn" onclick="showPage('members')" id="mnav-members"><i class="ti ti-users"></i>Members</button>
+    <button class="nav-btn" onclick="showPage('enroll')" id="mnav-enroll"><i class="ti ti-user-plus"></i>Enroll</button>
+    <button class="nav-btn" onclick="showPage('payments')" id="mnav-payments"><i class="ti ti-credit-card"></i>Payments</button>
+    <button class="nav-btn" onclick="showPage('reports')" id="mnav-reports"><i class="ti ti-chart-bar"></i>Reports</button>
+  </nav>
+
+  <main class="content">
+
+    <!-- ======================== DASHBOARD ======================== -->
+    <section class="page active" id="page-dashboard" aria-label="Dashboard">
+      <div class="alert alert-success"><i class="ti ti-trending-up"></i> Great week! Membership revenue is up 12% vs last month. Retention rate holding strong at 85.2%.</div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card" title="Total registered members">
+          <div class="kpi-label"><i class="ti ti-users"></i> Total members</div>
+          <div class="kpi-value">1,284</div>
+          <div class="kpi-delta up">↑ 4.2% this month</div>
+        </div>
+        <div class="kpi-card" title="Currently active paying members">
+          <div class="kpi-label"><i class="ti ti-user-check"></i> Active members</div>
+          <div class="kpi-value">1,091</div>
+          <div class="kpi-delta up">↑ 85% retention rate</div>
+        </div>
+        <div class="kpi-card" title="Total revenue collected this month">
+          <div class="kpi-label"><i class="ti ti-currency-rupee"></i> Monthly revenue</div>
+          <div class="kpi-value">₹8.4L</div>
+          <div class="kpi-delta up">↑ 12% vs last month</div>
+        </div>
+        <div class="kpi-card" title="Percentage of members who left">
+          <div class="kpi-label"><i class="ti ti-user-x"></i> Churn rate</div>
+          <div class="kpi-value">3.1%</div>
+          <div class="kpi-delta up">↓ improved by 0.8%</div>
+        </div>
+        <div class="kpi-card" title="Average revenue generated per member">
+          <div class="kpi-label"><i class="ti ti-chart-line"></i> Avg rev / member</div>
+          <div class="kpi-value">₹655</div>
+          <div class="kpi-delta up">↑ ₹45 vs last month</div>
+        </div>
+        <div class="kpi-card" title="How much of gym capacity is being used">
+          <div class="kpi-label"><i class="ti ti-activity"></i> Utilization rate</div>
+          <div class="kpi-value">74%</div>
+          <div class="kpi-delta neutral">→ Target: 80%</div>
+        </div>
+        <div class="kpi-card" title="New members enrolled this month">
+          <div class="kpi-label"><i class="ti ti-target"></i> New enrollments</div>
+          <div class="kpi-value">87</div>
+          <div class="kpi-delta up">↑ this month</div>
+        </div>
+        <div class="kpi-card" title="Classes scheduled for today">
+          <div class="kpi-label"><i class="ti ti-clock"></i> Classes today</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-delta neutral">6 done · 8 upcoming</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-bar"></i> Monthly enrollments</div>
+          <div class="bar-chart-wrap" id="dash-enroll-chart"></div>
+          <div style="display:flex;gap:6px;margin-top:4px" id="dash-enroll-labels"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-donut"></i> Membership plan mix</div>
+          <div class="donut-wrap">
+            <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Membership plan mix donut chart">
+              <title>Membership plan mix</title>
+              <circle cx="48" cy="48" r="36" fill="none" stroke="#E1F5EE" stroke-width="18"/>
+              <circle cx="48" cy="48" r="36" fill="none" stroke="#1D9E75" stroke-width="18" stroke-dasharray="88 138" stroke-dashoffset="-75" transform="rotate(-90 48 48)"/>
+              <circle cx="48" cy="48" r="36" fill="none" stroke="#5DCAA5" stroke-width="18" stroke-dasharray="79 147" transform="rotate(-90 48 48)" stroke-dashoffset="-163"/>
+              <circle cx="48" cy="48" r="36" fill="none" stroke="#FAC775" stroke-width="18" stroke-dasharray="59 167" transform="rotate(-90 48 48)" stroke-dashoffset="-242"/>
+              <text x="48" y="52" text-anchor="middle" font-size="12" font-weight="600" fill="#1D9E75">Mix</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div> Premium — 39%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#5DCAA5"></div> Standard — 35%</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#FAC775"></div> Basic — 26%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title"><i class="ti ti-alert-triangle"></i> Pending actions</div>
+      <div class="card">
+        <div class="pay-row">
+          <div class="pay-info">
+            <div class="pay-icon" style="background:#FAEEDA"><i class="ti ti-clock" style="color:#854F0B"></i></div>
+            <div><div class="pay-name">23 members with due payments</div><div class="pay-date">Renewal due this week</div></div>
+          </div>
+          <button class="btn btn-ghost" onclick="showPage('payments')">Review <i class="ti ti-arrow-right"></i></button>
+        </div>
+        <div class="pay-row">
+          <div class="pay-info">
+            <div class="pay-icon" style="background:#E6F1FB"><i class="ti ti-user-plus" style="color:#185FA5"></i></div>
+            <div><div class="pay-name">5 trial members expiring soon</div><div class="pay-date">Convert to paid membership</div></div>
+          </div>
+          <button class="btn btn-ghost" onclick="showPage('members')">View <i class="ti ti-arrow-right"></i></button>
+        </div>
+        <div class="pay-row">
+          <div class="pay-info">
+            <div class="pay-icon" style="background:#FCEBEB"><i class="ti ti-tool" style="color:#A32D2D"></i></div>
+            <div><div class="pay-name">Treadmill #4 maintenance due</div><div class="pay-date">Schedule service immediately</div></div>
+          </div>
+          <button class="btn btn-ghost" onclick="showPage('facilities')">View <i class="ti ti-arrow-right"></i></button>
+        </div>
+        <div class="pay-row">
+          <div class="pay-info">
+            <div class="pay-icon" style="background:#E1F5EE"><i class="ti ti-star" style="color:#0F6E56"></i></div>
+            <div><div class="pay-name">12 new Google reviews this week</div><div class="pay-date">Average rating: 4.7 ⭐</div></div>
+          </div>
+          <button class="btn btn-ghost">View <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== MEMBERS ======================== -->
+    <section class="page" id="page-members" aria-label="Member directory">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="section-title" style="margin-bottom:0"><i class="ti ti-users"></i> Member directory</div>
+        <button class="btn btn-primary" onclick="showPage('enroll')"><i class="ti ti-user-plus"></i> Add member</button>
+      </div>
+      <div class="search-bar">
+        <i class="ti ti-search"></i>
+        <input type="text" placeholder="Search by name, phone, or plan..." oninput="filterMembers(this.value)" aria-label="Search members">
+      </div>
+      <div class="filter-row" id="filter-row">
+        <div class="chip active" onclick="setChip(this,'all')">All (1,284)</div>
+        <div class="chip" onclick="setChip(this,'active')">Active (1,091)</div>
+        <div class="chip" onclick="setChip(this,'trial')">Trial (48)</div>
+        <div class="chip" onclick="setChip(this,'inactive')">Inactive (145)</div>
+        <div class="chip" onclick="setChip(this,'premium')">Premium</div>
+        <div class="chip" onclick="setChip(this,'standard')">Standard</div>
+        <div class="chip" onclick="setChip(this,'basic')">Basic</div>
+      </div>
+      <div class="member-grid" id="member-grid"></div>
+    </section>
+
+    <!-- ======================== ENROLLMENT ======================== -->
+    <section class="page" id="page-enroll" aria-label="Member enrollment">
+      <div class="section-title"><i class="ti ti-user-plus"></i> New member enrollment</div>
+      <div class="tab-row" id="enroll-tabs">
+        <button class="tab active" onclick="enrollTab(this,'et-personal')"><i class="ti ti-user"></i> Personal info</button>
+        <button class="tab" onclick="enrollTab(this,'et-plan')"><i class="ti ti-list"></i> Plan selection</button>
+        <button class="tab" onclick="enrollTab(this,'et-health')"><i class="ti ti-heart-rate-monitor"></i> Health profile</button>
+        <button class="tab" onclick="enrollTab(this,'et-payment')"><i class="ti ti-credit-card"></i> Payment setup</button>
+      </div>
+
+      <!-- Tab: Personal Info -->
+      <div id="et-personal" class="card">
+        <div class="form-grid">
+          <div class="form-group"><label>First name *</label><input type="text" id="f-firstname" placeholder="e.g. Arjun"></div>
+          <div class="form-group"><label>Last name *</label><input type="text" id="f-lastname" placeholder="e.g. Sharma"></div>
+          <div class="form-group"><label>Phone number *</label><input type="tel" id="f-phone" placeholder="+91 98765 43210"></div>
+          <div class="form-group"><label>Email address *</label><input type="email" id="f-email" placeholder="arjun@email.com"></div>
+          <div class="form-group"><label>Date of birth</label><input type="date" id="f-dob"></div>
+          <div class="form-group"><label>Gender</label>
+            <select id="f-gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select>
+          </div>
+          <div class="form-group"><label>Emergency contact name</label><input type="text" placeholder="Contact name"></div>
+          <div class="form-group"><label>Emergency contact phone</label><input type="tel" placeholder="+91 98765 00000"></div>
+          <div class="form-group"><label>Aadhar / Government ID</label><input type="text" placeholder="For KYC verification"></div>
+          <div class="form-group"><label>Occupation</label><input type="text" placeholder="e.g. Software Engineer"></div>
+          <div class="form-group full"><label>Residential address</label><textarea placeholder="Full address including city, state and PIN code"></textarea></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="clearEnrollForm()"><i class="ti ti-refresh"></i> Clear</button>
+          <button class="btn btn-primary" onclick="enrollTab(document.querySelectorAll('#enroll-tabs .tab')[1],'et-plan')">Next: Plan <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Tab: Plan Selection -->
+      <div id="et-plan" class="card" style="display:none">
+        <div class="plan-grid">
+          <div class="plan-card" onclick="selectPlan(this,'basic')">
+            <div class="plan-name">Basic</div>
+            <div class="plan-price">₹999<span>/mo</span></div>
+            <div class="plan-features">✓ Gym floor access<br>✓ Locker room<br>✓ Basic equipment<br>✗ Group classes<br>✗ Personal trainer</div>
+          </div>
+          <div class="plan-card selected" onclick="selectPlan(this,'standard')">
+            <div><span class="popular-badge">Most popular</span></div>
+            <div class="plan-name">Standard</div>
+            <div class="plan-price">₹1,799<span>/mo</span></div>
+            <div class="plan-features">✓ All basic features<br>✓ Group classes (unlimited)<br>✓ Trainer consultation<br>✓ Nutrition guide<br>✗ Personal training sessions</div>
+          </div>
+          <div class="plan-card" onclick="selectPlan(this,'premium')">
+            <div class="plan-name">Premium</div>
+            <div class="plan-price">₹2,999<span>/mo</span></div>
+            <div class="plan-features">✓ All standard features<br>✓ 8 personal training sessions<br>✓ Sauna & steam access<br>✓ Protein shake (1/day)<br>✓ Priority class booking</div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Membership tenure</label>
+            <select id="f-tenure" onchange="updateOrderSummary()">
+              <option value="1">1 month</option>
+              <option value="3">3 months (5% off)</option>
+              <option value="6">6 months (10% off)</option>
+              <option value="12">12 months (20% off)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Start date</label><input type="date" id="f-startdate"></div>
+          <div class="form-group">
+            <label>Trial period</label>
+            <select>
+              <option>No trial</option>
+              <option>7-day free trial</option>
+              <option>15-day free trial</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Referred by (member ID)</label><input type="text" placeholder="Optional referral code"></div>
+          <div class="form-group"><label>Add-ons</label>
+            <select>
+              <option>None</option>
+              <option>Personal locker (₹299/mo)</option>
+              <option>Guest passes × 2 (₹399/mo)</option>
+              <option>Parking spot (₹499/mo)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Promo / discount code</label><input type="text" placeholder="Enter code if available"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="enrollTab(document.querySelectorAll('#enroll-tabs .tab')[0],'et-personal')"><i class="ti ti-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" onclick="enrollTab(document.querySelectorAll('#enroll-tabs .tab')[2],'et-health')">Next: Health <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Tab: Health Profile -->
+      <div id="et-health" class="card" style="display:none">
+        <div class="form-grid">
+          <div class="form-group"><label>Height (cm)</label><input type="number" placeholder="e.g. 170" min="100" max="250"></div>
+          <div class="form-group"><label>Weight (kg)</label><input type="number" placeholder="e.g. 70" min="30" max="300"></div>
+          <div class="form-group">
+            <label>Primary fitness goal</label>
+            <select>
+              <option>Weight loss</option>
+              <option>Muscle gain</option>
+              <option>General fitness & wellness</option>
+              <option>Sports performance</option>
+              <option>Rehabilitation / injury recovery</option>
+              <option>Stress management</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current fitness level</label>
+            <select>
+              <option>Beginner (0–6 months)</option>
+              <option>Intermediate (6 months – 2 years)</option>
+              <option>Advanced (2+ years)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Preferred workout time</label>
+            <select>
+              <option>Early morning (5–8 AM)</option>
+              <option>Morning (8–11 AM)</option>
+              <option>Afternoon (11 AM–3 PM)</option>
+              <option>Evening (3–7 PM)</option>
+              <option>Night (7–10 PM)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Preferred training type</label>
+            <select>
+              <option>Cardio</option>
+              <option>Strength / weight training</option>
+              <option>Functional training</option>
+              <option>Yoga / Pilates</option>
+              <option>Group classes</option>
+              <option>Mixed</option>
+            </select>
+          </div>
+          <div class="form-group full"><label>Medical conditions / injuries</label><textarea placeholder="List any health conditions, injuries, or medications the trainer should be aware of..."></textarea></div>
+          <div class="form-group full"><label>Previous gym / fitness experience</label><textarea placeholder="Brief description of your fitness background and past gym memberships..."></textarea></div>
+          <div class="form-group full"><label>Dietary preferences / restrictions</label><textarea placeholder="e.g. vegetarian, lactose intolerant, diabetic, etc."></textarea></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="enrollTab(document.querySelectorAll('#enroll-tabs .tab')[1],'et-plan')"><i class="ti ti-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" onclick="enrollTab(document.querySelectorAll('#enroll-tabs .tab')[3],'et-payment')">Next: Payment <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Tab: Payment Setup -->
+      <div id="et-payment" class="card" style="display:none">
+        <div class="alert alert-info"><i class="ti ti-shield-lock"></i> All payments are secured with 256-bit SSL encryption. Your data is safe.</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Payment method</label>
+            <select id="f-paymethod">
+              <option>UPI (GPay / PhonePe / Paytm)</option>
+              <option>Credit card</option>
+              <option>Debit card</option>
+              <option>Net banking</option>
+              <option>Cash</option>
+              <option>EMI (3 / 6 / 12 months)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Auto-renewal</label>
+            <select>
+              <option>Enable auto-renewal</option>
+              <option>Remind me before renewal</option>
+              <option>Manual renewal only</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Billing cycle</label>
+            <select>
+              <option>Monthly</option>
+              <option>Quarterly</option>
+              <option>Yearly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Invoice preference</label>
+            <select>
+              <option>Email invoice</option>
+              <option>WhatsApp receipt</option>
+              <option>Both email & WhatsApp</option>
+              <option>No preference</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Promo / discount code</label><input type="text" placeholder="Enter coupon code"></div>
+          <div class="form-group"><label>Corporate / company code</label><input type="text" placeholder="For corporate discounts"></div>
+        </div>
+
+        <div class="order-box">
+          <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--text-primary)"><i class="ti ti-receipt"></i> Order summary</div>
+          <div class="order-row"><span id="os-plan-label">Standard plan × 1 month</span><span id="os-plan-amt">₹1,799</span></div>
+          <div class="order-row"><span>GST (18%)</span><span id="os-gst">₹324</span></div>
+          <div class="order-row" id="os-discount-row" style="display:none;color:#0F6E56"><span id="os-discount-label">Discount</span><span id="os-discount-amt">-₹0</span></div>
+          <hr class="order-divider">
+          <div class="order-total"><span>Total payable</span><span id="os-total">₹2,123</span></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="enrollTab(document.querySelectorAll('#enroll-tabs .tab')[2],'et-health')"><i class="ti ti-arrow-left"></i> Back</button>
+          <button class="btn btn-primary" onclick="confirmEnrollment()"><i class="ti ti-check"></i> Confirm enrollment</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== SCHEDULE ======================== -->
+    <section class="page" id="page-schedule" aria-label="Class schedule">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <div class="section-title" style="margin-bottom:0"><i class="ti ti-calendar"></i> Weekly class schedule</div>
+        <button class="btn btn-primary"><i class="ti ti-plus"></i> Add class</button>
+      </div>
+
+      <div class="alert alert-info"><i class="ti ti-info-circle"></i> This week — 74% average utilization across all 42 scheduled classes.</div>
+
+      <div class="schedule-grid" id="schedule-grid"></div>
+
+      <div style="margin-top:1.5rem">
+        <div class="section-title"><i class="ti ti-list-check"></i> Today's attendance tracker</div>
+        <div class="card">
+          <table class="data-table">
+            <thead>
+              <tr><th>Class</th><th>Trainer</th><th>Time</th><th>Capacity</th><th>Booked</th><th>Fill rate</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Morning Yoga</td><td>Priya Menon</td><td>6:00 AM</td><td>20</td><td>18</td><td>90%</td><td><span class="pill pill-green">Completed</span></td></tr>
+              <tr><td>HIIT Blast</td><td>Rajan Kumar</td><td>7:30 AM</td><td>15</td><td>14</td><td>93%</td><td><span class="pill pill-green">Completed</span></td></tr>
+              <tr><td>Spin Class</td><td>Anita Shah</td><td>9:00 AM</td><td>12</td><td>10</td><td>83%</td><td><span class="pill pill-blue">Live now</span></td></tr>
+              <tr><td>Boxing Basics</td><td>Vikram Tiwari</td><td>11:00 AM</td><td>10</td><td>7</td><td>70%</td><td><span class="pill pill-amber">Upcoming</span></td></tr>
+              <tr><td>Afternoon Pilates</td><td>Meena Rao</td><td>1:00 PM</td><td>15</td><td>9</td><td>60%</td><td><span class="pill pill-amber">Upcoming</span></td></tr>
+              <tr><td>Strength Training</td><td>Rajan Kumar</td><td>3:30 PM</td><td>20</td><td>16</td><td>80%</td><td><span class="pill pill-amber">Upcoming</span></td></tr>
+              <tr><td>Evening Yoga</td><td>Priya Menon</td><td>5:30 PM</td><td>20</td><td>19</td><td>95%</td><td><span class="pill pill-amber">Upcoming</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== PAYMENTS ======================== -->
+    <section class="page" id="page-payments" aria-label="Payments and billing">
+      <div class="section-title"><i class="ti ti-credit-card"></i> Payments &amp; billing</div>
+
+      <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi-card"><div class="kpi-label">Collected this month</div><div class="kpi-value">₹7.9L</div><div class="kpi-delta up">94% of monthly target</div></div>
+        <div class="kpi-card"><div class="kpi-label">Pending dues</div><div class="kpi-value">₹48,200</div><div class="kpi-delta down">23 members</div></div>
+        <div class="kpi-card"><div class="kpi-label">Overdue (30+ days)</div><div class="kpi-value">₹12,400</div><div class="kpi-delta down">6 members at risk</div></div>
+        <div class="kpi-card"><div class="kpi-label">Refunds issued</div><div class="kpi-value">₹8,500</div><div class="kpi-delta neutral">3 this month</div></div>
+      </div>
+
+      <div class="tab-row" id="payment-tabs">
+        <button class="tab active" onclick="payTab(this,'pt-recent')"><i class="ti ti-clock"></i> Recent transactions</button>
+        <button class="tab" onclick="payTab(this,'pt-due')"><i class="ti ti-alert-circle"></i> Due &amp; overdue</button>
+        <button class="tab" onclick="payTab(this,'pt-plans')"><i class="ti ti-list"></i> Plan pricing</button>
+        <button class="tab" onclick="payTab(this,'pt-invoice')"><i class="ti ti-file-invoice"></i> Invoice generator</button>
+      </div>
+
+      <div id="pt-recent" class="card">
+        <table class="data-table">
+          <thead><tr><th>Member</th><th>Plan</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Aditya Rao</td><td>Premium</td><td>₹3,539</td><td>UPI</td><td>Jun 11, 2026</td><td><span class="pill pill-green">Paid</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-download"></i></button></td></tr>
+            <tr><td>Sunita Patel</td><td>Standard</td><td>₹2,123</td><td>Card</td><td>Jun 11, 2026</td><td><span class="pill pill-green">Paid</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-download"></i></button></td></tr>
+            <tr><td>Rohan Mehta</td><td>Basic</td><td>₹1,179</td><td>Cash</td><td>Jun 10, 2026</td><td><span class="pill pill-green">Paid</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-download"></i></button></td></tr>
+            <tr><td>Kavya Nair</td><td>Premium</td><td>₹3,539</td><td>UPI</td><td>Jun 10, 2026</td><td><span class="pill pill-amber">Due</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-send"></i></button></td></tr>
+            <tr><td>Manoj Gupta</td><td>Standard</td><td>₹2,123</td><td>Net banking</td><td>Jun 8, 2026</td><td><span class="pill pill-green">Paid</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-download"></i></button></td></tr>
+            <tr><td>Deepa Singh</td><td>Basic</td><td>₹1,179</td><td>UPI</td><td>May 10, 2026</td><td><span class="pill pill-red">Overdue</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-send"></i></button></td></tr>
+            <tr><td>Arjun Das</td><td>Standard</td><td>₹2,123</td><td>Cash</td><td>May 24, 2026</td><td><span class="pill pill-amber">Due</span></td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:11px"><i class="ti ti-send"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="pt-due" class="card" style="display:none">
+        <div class="alert alert-warning"><i class="ti ti-alert-triangle"></i> 6 members are 30+ days overdue. Consider calling or sending WhatsApp reminders.</div>
+        <table class="data-table">
+          <thead><tr><th>Member</th><th>Plan</th><th>Due amount</th><th>Days overdue</th><th>Contact</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Deepa Singh</td><td>Basic</td><td>₹1,179</td><td>32 days</td><td>+91 98100 11111</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px"><i class="ti ti-brand-whatsapp"></i> Remind</button></td></tr>
+            <tr><td>Arjun Das</td><td>Standard</td><td>₹2,123</td><td>18 days</td><td>+91 98200 22222</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px"><i class="ti ti-brand-whatsapp"></i> Remind</button></td></tr>
+            <tr><td>Preethi R.</td><td>Premium</td><td>₹3,539</td><td>7 days</td><td>+91 98300 33333</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px"><i class="ti ti-brand-whatsapp"></i> Remind</button></td></tr>
+            <tr><td>Karthik S.</td><td>Basic</td><td>₹1,179</td><td>5 days</td><td>+91 98400 44444</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px"><i class="ti ti-mail"></i> Email</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="pt-plans" class="card" style="display:none">
+        <table class="data-table">
+          <thead><tr><th>Plan</th><th>Base rate</th><th>+GST (18%)</th><th>3-mo (5% off)</th><th>6-mo (10% off)</th><th>12-mo (20% off)</th><th>Members</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Basic</strong></td><td>₹999</td><td>₹1,179</td><td>₹2,849</td><td>₹5,395</td><td>₹9,590</td><td>334</td></tr>
+            <tr><td><strong>Standard</strong></td><td>₹1,799</td><td>₹2,123</td><td>₹6,051</td><td>₹11,461</td><td>₹20,381</td><td>449</td></tr>
+            <tr><td><strong>Premium</strong></td><td>₹2,999</td><td>₹3,539</td><td>₹10,086</td><td>₹19,111</td><td>₹33,974</td><td>501</td></tr>
+            <tr><td>Day pass</td><td>₹199</td><td>₹235</td><td>—</td><td>—</td><td>—</td><td>Varies</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="pt-invoice" class="card" style="display:none">
+        <div class="form-grid">
+          <div class="form-group"><label>Member name</label><input type="text" placeholder="Full name" id="inv-name"></div>
+          <div class="form-group"><label>Phone / Member ID</label><input type="text" placeholder="+91 98765 43210" id="inv-phone"></div>
+          <div class="form-group"><label>Plan</label><select id="inv-plan"><option>Basic — ₹999</option><option>Standard — ₹1,799</option><option>Premium — ₹2,999</option></select></div>
+          <div class="form-group"><label>Period</label><select id="inv-period"><option>June 2026</option><option>May 2026</option><option>April 2026</option></select></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="alert('Invoice generated! In a live app, this would download a PDF receipt.')"><i class="ti ti-file-invoice"></i> Generate invoice</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== FACILITIES ======================== -->
+    <section class="page" id="page-facilities" aria-label="Gym facilities">
+      <div class="section-title"><i class="ti ti-building"></i> Gym facilities &amp; equipment</div>
+
+      <div class="facility-grid">
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#1D9E75"><i class="ti ti-run" style="font-size:28px"></i></div>
+          <div class="fac-name">Cardio zone</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Utilization: 82%</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:82%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#534AB7"><i class="ti ti-barbell" style="font-size:28px"></i></div>
+          <div class="fac-name">Free weights area</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Utilization: 91%</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:91%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#D85A30"><i class="ti ti-heart-rate-monitor" style="font-size:28px"></i></div>
+          <div class="fac-name">Functional training</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Utilization: 67%</div>
+          <div class="progress-bar"><div class="progress-fill pf-amber" style="width:67%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#185FA5"><i class="ti ti-droplet" style="font-size:28px"></i></div>
+          <div class="fac-name">Swimming pool</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Utilization: 55%</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:55%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#854F0B"><i class="ti ti-flame" style="font-size:28px"></i></div>
+          <div class="fac-name">Sauna &amp; steam room</div>
+          <span class="pill pill-amber">Maintenance</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Down for service</div>
+          <div class="progress-bar"><div class="progress-fill pf-red" style="width:0%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#993556"><i class="ti ti-yoga" style="font-size:28px"></i></div>
+          <div class="fac-name">Yoga &amp; pilates studio</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Utilization: 78%</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:78%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#0F6E56"><i class="ti ti-salad" style="font-size:28px"></i></div>
+          <div class="fac-name">Nutrition bar</div>
+          <span class="pill pill-green">Open</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Today's orders: 45%</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:45%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#3C3489"><i class="ti ti-massage" style="font-size:28px"></i></div>
+          <div class="fac-name">Recovery room</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Bookings: 6/10 today</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:60%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#185FA5"><i class="ti ti-parking" style="font-size:28px"></i></div>
+          <div class="fac-name">Parking lot</div>
+          <span class="pill pill-green">Available</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Occupancy: 64%</div>
+          <div class="progress-bar"><div class="progress-fill pf-amber" style="width:64%"></div></div>
+        </div>
+        <div class="facility-card">
+          <div class="fac-icon" style="color:#854F0B"><i class="ti ti-shirt" style="font-size:28px"></i></div>
+          <div class="fac-name">Locker rooms</div>
+          <span class="pill pill-green">Operational</span>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Utilization: 71%</div>
+          <div class="progress-bar"><div class="progress-fill pf-green" style="width:71%"></div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem">
+        <div class="section-title"><i class="ti ti-tool"></i> Equipment maintenance tracker</div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Equipment</th><th>Zone</th><th>Qty</th><th>Condition</th><th>Last service</th><th>Next service</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Treadmill #1–3</td><td>Cardio</td><td>3</td><td>Good</td><td>Apr 2026</td><td>Jul 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Treadmill #4</td><td>Cardio</td><td>1</td><td>Fair</td><td>Jan 2026</td><td>Overdue</td><td><span class="pill pill-red">Overdue</span></td></tr>
+              <tr><td>Elliptical trainers</td><td>Cardio</td><td>5</td><td>Good</td><td>May 2026</td><td>Aug 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Rowing machines</td><td>Cardio</td><td>3</td><td>Good</td><td>May 2026</td><td>Aug 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Bench press stations</td><td>Weights</td><td>6</td><td>Excellent</td><td>Mar 2026</td><td>Sep 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Squat racks</td><td>Weights</td><td>4</td><td>Good</td><td>Apr 2026</td><td>Jul 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Spin bikes</td><td>Studio</td><td>12</td><td>Good</td><td>May 2026</td><td>Aug 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Dumbbells set</td><td>Weights</td><td>Full set</td><td>Excellent</td><td>Jun 2026</td><td>Dec 2026</td><td><span class="pill pill-green">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== REPORTS ======================== -->
+    <section class="page" id="page-reports" aria-label="Analytics and reports">
+      <div class="section-title"><i class="ti ti-chart-bar"></i> Analytics &amp; reports</div>
+
+      <div class="tab-row" id="report-tabs">
+        <button class="tab active" onclick="repTab(this,'rt-revenue')"><i class="ti ti-currency-rupee"></i> Revenue</button>
+        <button class="tab" onclick="repTab(this,'rt-retention')"><i class="ti ti-heart"></i> Retention</button>
+        <button class="tab" onclick="repTab(this,'rt-trainers')"><i class="ti ti-user-star"></i> Trainers</button>
+        <button class="tab" onclick="repTab(this,'rt-leads')"><i class="ti ti-target"></i> Leads &amp; CAC</button>
+      </div>
+
+      <div id="rt-revenue">
+        <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="kpi-card"><div class="kpi-label">YTD revenue</div><div class="kpi-value">₹49.8L</div><div class="kpi-delta up">↑ 18% vs last year</div></div>
+          <div class="kpi-card"><div class="kpi-label">Monthly avg</div><div class="kpi-value">₹8.3L</div><div class="kpi-delta up">On track</div></div>
+          <div class="kpi-card"><div class="kpi-label">Best month</div><div class="kpi-value">Jan 2026</div><div class="kpi-delta up">₹9.1L</div></div>
+          <div class="kpi-card"><div class="kpi-label">Revenue target</div><div class="kpi-value">94%</div><div class="kpi-delta up">₹7.9L / ₹8.4L</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-line"></i> Revenue trend — last 6 months</div>
+          <div style="display:flex;align-items:flex-end;gap:10px;height:110px;margin-bottom:6px" id="rev-chart"></div>
+          <div style="display:flex;gap:10px" id="rev-labels"></div>
+        </div>
+      </div>
+
+      <div id="rt-retention" style="display:none">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-heart"></i> Member retention KPIs</div>
+          <table class="data-table">
+            <thead><tr><th>KPI</th><th>This month</th><th>Last month</th><th>Target</th><th>Trend</th></tr></thead>
+            <tbody>
+              <tr><td>Retention rate</td><td>85.2%</td><td>84.1%</td><td>88%</td><td style="color:#1D9E75">↑ Improving</td></tr>
+              <tr><td>Churn rate</td><td>3.1%</td><td>3.9%</td><td>&lt;3%</td><td style="color:#1D9E75">↓ Improving</td></tr>
+              <tr><td>Trial → paid conversion</td><td>68%</td><td>62%</td><td>70%</td><td style="color:#1D9E75">↑ Improving</td></tr>
+              <tr><td>Avg membership duration</td><td>8.4 months</td><td>8.0 months</td><td>10 months</td><td style="color:#1D9E75">↑ Improving</td></tr>
+              <tr><td>NPS score</td><td>72</td><td>69</td><td>75</td><td style="color:#1D9E75">↑ Improving</td></tr>
+              <tr><td>Customer acquisition cost</td><td>₹1,240</td><td>₹1,380</td><td>&lt;₹1,200</td><td style="color:#1D9E75">↓ Improving</td></tr>
+              <tr><td>Avg lifetime value (LTV)</td><td>₹34,800</td><td>₹33,200</td><td>₹40,000</td><td style="color:#1D9E75">↑ Improving</td></tr>
+              <tr><td>LTV : CAC ratio</td><td>28:1</td><td>24:1</td><td>30:1</td><td style="color:#1D9E75">↑ Improving</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="rt-trainers" style="display:none">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-user-star"></i> Trainer performance board</div>
+          <table class="data-table">
+            <thead><tr><th>Trainer</th><th>Speciality</th><th>Classes/week</th><th>Avg attendance</th><th>Member rating</th><th>Revenue generated</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Priya Menon</td><td>Yoga, Pilates</td><td>12</td><td>18/20 (90%)</td><td>⭐ 4.9</td><td>₹1.2L</td><td><span class="pill pill-green">Active</span></td></tr>
+              <tr><td>Rajan Kumar</td><td>HIIT, Strength</td><td>15</td><td>13/15 (87%)</td><td>⭐ 4.7</td><td>₹1.5L</td><td><span class="pill pill-green">Active</span></td></tr>
+              <tr><td>Anita Shah</td><td>Spin, Cardio</td><td>10</td><td>10/12 (83%)</td><td>⭐ 4.8</td><td>₹0.9L</td><td><span class="pill pill-green">Active</span></td></tr>
+              <tr><td>Vikram Tiwari</td><td>Boxing, MMA</td><td>8</td><td>7/10 (70%)</td><td>⭐ 4.6</td><td>₹0.7L</td><td><span class="pill pill-green">Active</span></td></tr>
+              <tr><td>Meena Rao</td><td>Pilates, Stretching</td><td>9</td><td>12/15 (80%)</td><td>⭐ 4.5</td><td>₹0.8L</td><td><span class="pill pill-green">Active</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="rt-leads" style="display:none">
+        <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="kpi-card"><div class="kpi-label">Leads this month</div><div class="kpi-value">342</div><div class="kpi-delta up">↑ 15% vs last</div></div>
+          <div class="kpi-card"><div class="kpi-label">Lead conversion</div><div class="kpi-value">25.4%</div><div class="kpi-delta up">↑ improving</div></div>
+          <div class="kpi-card"><div class="kpi-label">Avg CAC</div><div class="kpi-value">₹1,240</div><div class="kpi-delta up">↓ vs ₹1,380</div></div>
+          <div class="kpi-card"><div class="kpi-label">Top channel</div><div class="kpi-value">Instagram</div><div class="kpi-delta up">38% of leads</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-pie"></i> Lead sources breakdown</div>
+          <table class="data-table">
+            <thead><tr><th>Source</th><th>Leads</th><th>Conversions</th><th>Conversion rate</th><th>Cost per lead</th><th>CAC</th></tr></thead>
+            <tbody>
+              <tr><td>Instagram / Meta ads</td><td>130</td><td>35</td><td>27%</td><td>₹180</td><td>₹1,080</td></tr>
+              <tr><td>Google ads</td><td>85</td><td>22</td><td>26%</td><td>₹220</td><td>₹1,320</td></tr>
+              <tr><td>Walk-ins</td><td>67</td><td>20</td><td>30%</td><td>₹0</td><td>₹0</td></tr>
+              <tr><td>Member referrals</td><td>40</td><td>18</td><td>45%</td><td>₹50</td><td>₹300</td></tr>
+              <tr><td>WhatsApp campaigns</td><td>20</td><td>5</td><td>25%</td><td>₹30</td><td>₹240</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Success Modal -->
+<div id="success-modal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+  <div class="modal">
+    <div class="modal-icon"><i class="ti ti-check"></i></div>
+    <div class="modal-title" id="modal-heading">Member enrolled successfully!</div>
+    <div class="modal-sub">A welcome SMS and payment receipt have been sent to the member's registered phone number.</div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="document.getElementById('success-modal').classList.remove('open');showPage('members')"><i class="ti ti-users"></i> View members</button>
+      <button class="btn btn-primary" onclick="document.getElementById('success-modal').classList.remove('open')"><i class="ti ti-user-plus"></i> Enroll another</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PAGES = ['dashboard','members','enroll','schedule','payments','facilities','reports'];
+
+function showPage(p) {
+  PAGES.forEach(id => {
+    const pg = document.getElementById('page-'+id);
+    const nb = document.getElementById('nav-'+id);
+    const mnb = document.getElementById('mnav-'+id);
+    if(pg) pg.classList.remove('active');
+    if(nb) nb.classList.remove('active');
+    if(mnb) mnb.classList.remove('active');
+  });
+  const target = document.getElementById('page-'+p);
+  if(target) target.classList.add('active');
+  const nb = document.getElementById('nav-'+p);
+  if(nb) nb.classList.add('active');
+  const mnb = document.getElementById('mnav-'+p);
+  if(mnb) mnb.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function enrollTab(btn, tabId) {
+  document.querySelectorAll('#enroll-tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['et-personal','et-plan','et-health','et-payment'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  const t = document.getElementById(tabId);
+  if(t) t.style.display = 'block';
+}
+
+function payTab(btn, tabId) {
+  document.querySelectorAll('#payment-tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['pt-recent','pt-due','pt-plans','pt-invoice'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  const t = document.getElementById(tabId);
+  if(t) t.style.display = 'block';
+}
+
+function repTab(btn, tabId) {
+  document.querySelectorAll('#report-tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['rt-revenue','rt-retention','rt-trainers','rt-leads'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  const t = document.getElementById(tabId);
+  if(t) t.style.display = 'block';
+}
+
+function setChip(el, filter) {
+  document.querySelectorAll('.filter-row .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function filterMembers(v) {
+  const q = v.toLowerCase();
+  document.querySelectorAll('.member-card').forEach(card => {
+    const name = card.querySelector('.m-name').textContent.toLowerCase();
+    const plan = card.querySelector('.m-plan').textContent.toLowerCase();
+    card.style.display = (name.includes(q) || plan.includes(q)) ? '' : 'none';
+  });
+}
+
+function selectPlan(el, plan) {
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function clearEnrollForm() {
+  document.querySelectorAll('#et-personal input, #et-personal select, #et-personal textarea').forEach(f => f.value = '');
+}
+
+function confirmEnrollment() {
+  document.getElementById('success-modal').classList.add('open');
+}
+
+// ---- Members data ----
+const members = [
+  {name:'Aditya Rao', plan:'Premium', status:'active', since:'Jan 2026', bg:'#E1F5EE', tc:'#0F6E56'},
+  {name:'Sunita Patel', plan:'Standard', status:'active', since:'Feb 2026', bg:'#EEEDFE', tc:'#3C3489'},
+  {name:'Rohan Mehta', plan:'Basic', status:'active', since:'Mar 2026', bg:'#FAEEDA', tc:'#854F0B'},
+  {name:'Kavya Nair', plan:'Premium', status:'due', since:'Nov 2025', bg:'#E1F5EE', tc:'#0F6E56'},
+  {name:'Manoj Gupta', plan:'Standard', status:'active', since:'Apr 2026', bg:'#E6F1FB', tc:'#185FA5'},
+  {name:'Deepa Singh', plan:'Basic', status:'inactive', since:'Aug 2025', bg:'#FCEBEB', tc:'#A32D2D'},
+  {name:'Arjun Das', plan:'Standard', status:'due', since:'Dec 2025', bg:'#EEEDFE', tc:'#3C3489'},
+  {name:'Preethi R.', plan:'Premium', status:'active', since:'May 2026', bg:'#E1F5EE', tc:'#0F6E56'},
+  {name:'Karthik S.', plan:'Basic', status:'active', since:'Jan 2026', bg:'#FAEEDA', tc:'#854F0B'},
+  {name:'Ananya M.', plan:'Standard', status:'trial', since:'Jun 2026', bg:'#E6F1FB', tc:'#185FA5'},
+  {name:'Vivek T.', plan:'Premium', status:'active', since:'Mar 2026', bg:'#E1F5EE', tc:'#0F6E56'},
+  {name:'Lakshmi V.', plan:'Standard', status:'active', since:'Apr 2026', bg:'#EEEDFE', tc:'#3C3489'},
+];
+
+function initMembers() {
+  const g = document.getElementById('member-grid');
+  if(!g) return;
+  const stMap = {active:'pill-green', due:'pill-amber', inactive:'pill-red', trial:'pill-blue'};
+  const stLabel = {active:'Active', due:'Payment due', inactive:'Inactive', trial:'Trial'};
+  g.innerHTML = members.map(m => {
+    const initials = m.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    return `<div class="member-card">
+      <div class="m-avatar" style="background:${m.bg};color:${m.tc}">${initials}</div>
+      <div class="m-name">${m.name}</div>
+      <div class="m-plan">${m.plan} plan</div>
+      <div class="m-meta">
+        <span class="m-since">Since ${m.since}</span>
+        <span class="pill ${stMap[m.status]}">${stLabel[m.status]}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- Charts ----
+function initCharts() {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+  const enrollVals = [62,74,68,81,79,87];
+  const revVals = [8.1,7.6,8.4,8.8,8.2,8.4];
+  const maxE = Math.max(...enrollVals);
+  const maxR = Math.max(...revVals);
+
+  const ec = document.getElementById('dash-enroll-chart');
+  const el = document.getElementById('dash-enroll-labels');
+  if(ec) ec.innerHTML = enrollVals.map((v,i) =>
+    `<div class="bar-col" style="flex:1"><div class="bar" style="height:${Math.round(v/maxE*76)}px" title="${v} enrollments in ${months[i]}"></div><div class="bar-lbl">${months[i]}</div></div>`
+  ).join('');
+
+  const rc = document.getElementById('rev-chart');
+  const rl = document.getElementById('rev-labels');
+  if(rc) rc.innerHTML = revVals.map((v,i) =>
+    `<div class="bar-col" style="flex:1"><div class="bar" style="height:${Math.round(v/maxR*106)}px" title="₹${v}L in ${months[i]}"></div></div>`
+  ).join('');
+  if(rl) rl.innerHTML = months.map(m =>
+    `<div style="flex:1;font-size:10px;color:var(--text-tertiary);text-align:center">${m}</div>`
+  ).join('');
+}
+
+// ---- Schedule ----
+function initSchedule() {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const schedule = [
+    [{t:'6:00',n:'Yoga',c:'cb-yoga'},{t:'9:00',n:'Spin',c:'cb-spin'},{t:'6:00 PM',n:'Pilates',c:'cb-pilates'}],
+    [{t:'7:30',n:'HIIT',c:'cb-hiit'},{t:'11:00',n:'Boxing',c:'cb-boxing'},{t:'5:30 PM',n:'Strength',c:'cb-hiit'}],
+    [{t:'6:00',n:'Yoga',c:'cb-yoga'},{t:'4:00 PM',n:'Spin',c:'cb-spin'}],
+    [{t:'7:30',n:'HIIT',c:'cb-hiit'},{t:'9:00',n:'Pilates',c:'cb-pilates'},{t:'6:00 PM',n:'Boxing',c:'cb-boxing'}],
+    [{t:'6:00',n:'Yoga',c:'cb-yoga'},{t:'11:00',n:'HIIT',c:'cb-hiit'},{t:'5:30 PM',n:'Pilates',c:'cb-pilates'}],
+    [{t:'7:00',n:'Boxing',c:'cb-boxing'},{t:'9:00',n:'Spin',c:'cb-spin'},{t:'11:00',n:'Yoga',c:'cb-yoga'},{t:'4:00 PM',n:'HIIT',c:'cb-hiit'}],
+    [{t:'8:00',n:'Yoga',c:'cb-yoga'},{t:'10:00',n:'Pilates',c:'cb-pilates'},{t:'12:00',n:'Spin',c:'cb-spin'}],
+  ];
+  const g = document.getElementById('schedule-grid');
+  if(!g) return;
+  g.innerHTML = days.map((d, i) =>
+    `<div class="day-col">
+      <div class="day-header">${d}</div>
+      ${schedule[i].map(c =>
+        `<div class="class-block ${c.c}">
+          <div class="c-time">${c.t}</div>
+          <div class="c-name">${c.n}</div>
+        </div>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+
+// Init on load
+document.addEventListener('DOMContentLoaded', () => {
+  initMembers();
+  initCharts();
+  initSchedule();
+});
+
+// Fallback if DOMContentLoaded already fired
+if(document.readyState !== 'loading') {
+  initMembers();
+  initCharts();
+  initSchedule();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top 5 US Universities — Performance Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f2;
+      --bg-tertiary: #eeecea;
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #888780;
+      --border-light: rgba(0,0,0,0.1);
+      --border-mid: rgba(0,0,0,0.18);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1e1e1c;
+        --bg-secondary: #2a2a27;
+        --bg-tertiary: #323230;
+        --text-primary: #f0ede8;
+        --text-secondary: #b4b2a9;
+        --text-tertiary: #888780;
+        --border-light: rgba(255,255,255,0.1);
+        --border-mid: rgba(255,255,255,0.18);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; }
+
+    .page-header {
+      margin-bottom: 1.75rem;
+    }
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .page-header p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .sec-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin: 0 0 10px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .metric {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: .875rem 1rem;
+    }
+    .metric .ml { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+    .metric .mv { font-size: 22px; font-weight: 500; color: var(--text-primary); }
+
+    .uni-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .uni-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    .uni-card.active { border: 2px solid #378ADD; }
+    .uni-card .rank { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
+    .uni-card .uname { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; line-height: 1.3; }
+    .uni-card .score-bar { height: 4px; background: var(--border-light); border-radius: 2px; margin-bottom: 6px; }
+    .uni-card .score-fill { height: 4px; border-radius: 2px; }
+    .uni-card .uscore { font-size: 18px; font-weight: 500; }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-bottom: 1.5rem;
+    }
+    .chart-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .legend span { display: flex; align-items: center; gap: 4px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    .detail-card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 0.5px solid var(--border-light);
+      font-size: 13px;
+    }
+    .stat-row:nth-last-child(-n+2) { border-bottom: none; }
+    .stat-lbl { color: var(--text-secondary); }
+    .stat-val { font-weight: 500; color: var(--text-primary); }
+
+    .bar-h { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+    .bar-h .bname { width: 80px; color: var(--text-secondary); flex-shrink: 0; font-size: 11px; }
+    .bar-h .btrack { flex: 1; background: var(--bg-secondary); border-radius: 2px; height: 14px; }
+    .bar-h .bfill { height: 14px; border-radius: 2px; display: flex; align-items: center; padding-left: 6px; font-size: 11px; font-weight: 500; }
+
+    .footer { font-size: 11px; color: var(--text-tertiary); text-align: right; margin-top: .5rem; }
+
+    @media (max-width: 640px) {
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+      .uni-grid { grid-template-columns: repeat(3, 1fr); }
+      .chart-row { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <h1>Top 5 US universities — performance dashboard</h1>
+    <p>QS World Rankings 2024 · university fact sheets · figures are indicative</p>
+  </div>
+
+  <div class="sec-label">Summary</div>
+  <div class="metric-grid">
+    <div class="metric"><div class="ml">Avg QS world rank</div><div class="mv">#4</div></div>
+    <div class="metric"><div class="ml">Avg acceptance rate</div><div class="mv">6.4%</div></div>
+    <div class="metric"><div class="ml">Total Nobel laureates</div><div class="mv">370+</div></div>
+    <div class="metric"><div class="ml">Avg endowment</div><div class="mv">$47B</div></div>
+  </div>
+
+  <div class="sec-label">Select a university</div>
+  <div class="uni-grid" id="uniGrid"></div>
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="sec-label">Key metrics comparison</div>
+      <div class="legend">
+        <span><span class="legend-dot" style="background:#378ADD"></span>Research output (×1K papers)</span>
+        <span><span class="legend-dot" style="background:#1D9E75"></span>Faculty–student ratio score</span>
+        <span><span class="legend-dot" style="background:#D85A30"></span>Industry income score</span>
+      </div>
+      <div style="position:relative;width:100%;height:240px">
+        <canvas id="radarChart" role="img" aria-label="Radar chart comparing research output, faculty ratio and industry income for 5 universities"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="sec-label">Endowment ($B)</div>
+      <div style="position:relative;width:100%;height:240px">
+        <canvas id="endowChart" role="img" aria-label="Bar chart of university endowments in billions of dollars"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">Selected university details</div>
+  <div class="detail-card" id="detailCard"></div>
+
+  <div class="chart-card" style="margin-bottom:1.5rem">
+    <div class="sec-label">Acceptance rate (%)</div>
+    <div id="accBars"></div>
+  </div>
+
+  <div class="footer">Sources: QS World Rankings 2024, USNWR, university fact sheets. Data is indicative.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const unis = [
+  { id:0, name:'MIT', loc:'Cambridge, MA', founded:1861, rank:1, qs:1, acceptance:3.9, endowment:24, students:11500, faculty:1067, nobel:97, research:12400, facultyScore:88, industryScore:99, color:'#378ADD' },
+  { id:1, name:'Stanford', loc:'Stanford, CA', founded:1885, rank:2, qs:5, acceptance:3.7, endowment:37, students:17000, faculty:2300, nobel:85, research:11200, facultyScore:82, industryScore:97, color:'#1D9E75' },
+  { id:2, name:'Harvard', loc:'Cambridge, MA', founded:1636, rank:3, qs:4, acceptance:3.4, endowment:51, students:22000, faculty:2400, nobel:161, research:13100, facultyScore:79, industryScore:91, color:'#D85A30' },
+  { id:3, name:'Caltech', loc:'Pasadena, CA', founded:1891, rank:4, qs:6, acceptance:6.4, endowment:4.3, students:2200, faculty:300, nobel:46, research:4800, facultyScore:97, industryScore:87, color:'#7F77DD' },
+  { id:4, name:'Princeton', loc:'Princeton, NJ', founded:1746, rank:5, qs:12, acceptance:5.8, endowment:35, students:8200, faculty:1100, nobel:68, research:6200, facultyScore:90, industryScore:79, color:'#BA7517' },
+];
+let active = 0;
+
+function renderCards() {
+  const grid = document.getElementById('uniGrid');
+  grid.innerHTML = '';
+  unis.forEach(u => {
+    const c = document.createElement('div');
+    c.className = 'uni-card' + (u.id === active ? ' active' : '');
+    c.innerHTML = `
+      <div class="rank">#${u.rank} Overall</div>
+      <div class="uname">${u.name}</div>
+      <div class="score-bar"><div class="score-fill" style="width:${Math.round((6-u.rank)/5*100)}%;background:${u.color}"></div></div>
+      <div class="uscore" style="color:${u.color}">QS #${u.qs}</div>`;
+    c.onclick = () => { active = u.id; renderCards(); renderDetail(); };
+    grid.appendChild(c);
+  });
+}
+
+function renderDetail() {
+  const u = unis[active];
+  document.getElementById('detailCard').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="width:40px;height:40px;border-radius:50%;background:${u.color}22;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;color:${u.color}">${u.name.slice(0,2)}</div>
+      <div>
+        <div style="font-size:16px;font-weight:500;color:var(--text-primary)">${u.name}</div>
+        <div style="font-size:12px;color:var(--text-secondary)">${u.loc} · Est. ${u.founded}</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-row"><span class="stat-lbl">QS world rank</span><span class="stat-val">#${u.qs}</span></div>
+      <div class="stat-row"><span class="stat-lbl">Acceptance rate</span><span class="stat-val">${u.acceptance}%</span></div>
+      <div class="stat-row"><span class="stat-lbl">Endowment</span><span class="stat-val">$${u.endowment}B</span></div>
+      <div class="stat-row"><span class="stat-lbl">Nobel laureates</span><span class="stat-val">${u.nobel}</span></div>
+      <div class="stat-row"><span class="stat-lbl">Total students</span><span class="stat-val">${u.students.toLocaleString()}</span></div>
+      <div class="stat-row"><span class="stat-lbl">Annual research papers</span><span class="stat-val">${u.research.toLocaleString()}</span></div>
+    </div>`;
+}
+
+function renderAccBars() {
+  const wrap = document.getElementById('accBars');
+  wrap.innerHTML = '';
+  const max = Math.max(...unis.map(u => u.acceptance));
+  unis.forEach(u => {
+    const pct = Math.round((u.acceptance / max) * 100);
+    wrap.innerHTML += `<div class="bar-h"><div class="bname">${u.name}</div><div class="btrack"><div class="bfill" style="width:${pct}%;background:${u.color}22;color:${u.color}">${u.acceptance}%</div></div></div>`;
+  });
+}
+
+renderCards();
+renderDetail();
+renderAccBars();
+
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Research', 'Faculty ratio', 'Industry income'],
+    datasets: unis.map(u => ({
+      label: u.name,
+      data: [Math.round(u.research / 200), u.facultyScore, u.industryScore],
+      borderColor: u.color,
+      backgroundColor: u.color + '18',
+      borderWidth: 2,
+      pointRadius: 3
+    }))
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      r: {
+        ticks: { display: false },
+        grid: { color: 'rgba(128,128,128,0.15)' },
+        pointLabels: { font: { size: 11 } }
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('endowChart'), {
+  type: 'bar',
+  data: {
+    labels: unis.map(u => u.name),
+    datasets: [{
+      data: unis.map(u => u.endowment),
+      backgroundColor: unis.map(u => u.color + 'bb'),
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: {
+        grid: { color: 'rgba(128,128,128,0.1)' },
+        ticks: { font: { size: 11 }, callback: v => '$' + v + 'B' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

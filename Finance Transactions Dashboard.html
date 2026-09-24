@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Finance Transactions Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#14181f;--mu:#667085;--bd:#e3e6ec;--ac:#3b6cf6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c25;--tx:#e8ebf1;--mu:#8b93a3;--bd:#2a3040;--ac:#7c9cff}}
+:root[data-theme="dark"]{--bg:#0f1218;--card:#181c25;--tx:#e8ebf1;--mu:#8b93a3;--bd:#2a3040;--ac:#7c9cff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px}
+h1{font-size:20px;margin:0}.sub{color:var(--mu);margin:2px 0 14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.k,.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+.k b{display:block;font-size:19px}.k span{color:var(--mu);font-size:12px}
+.bar{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:14px;align-items:center}.grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.grp>span{color:var(--mu)}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:4px 12px;cursor:pointer}
+button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:12px}
+.card h2{font-size:14px;margin:0 0 2px}.card p{margin:0 0 8px;color:var(--mu);font-size:12px}
+.box{position:relative;height:290px}footer{color:var(--mu);font-size:12px;margin-top:14px}
+</style></head><body>
+<h1>💳 Finance Transactions Dashboard</h1>
+<div class="sub">50 transactions · Jan–Feb 2024 · filter by month or account type, click the transaction-type doughnut to drill in</div>
+<div class="kpis" id="kpis"></div>
+<div class="bar"><div class="grp" id="fm"></div><div class="grp" id="fa"></div><button id="rs">Reset</button></div>
+<div class="grid">
+<div class="card"><h2>1 · Daily transaction value</h2><p>Spot spikes and quiet days.</p><div class="box"><canvas id="c1"></canvas></div></div>
+<div class="card"><h2>2 · Value by category</h2><p>Where the money goes (₹).</p><div class="box"><canvas id="c2"></canvas></div></div>
+<div class="card"><h2>3 · Transaction type mix</h2><p>Click a slice to filter everything by that type.</p><div class="box"><canvas id="c3"></canvas></div></div>
+<div class="card"><h2>4 · Value by bank</h2><p>Total ₹ handled per bank.</p><div class="box"><canvas id="c4"></canvas></div></div>
+<div class="card"><h2>5 · Value by city</h2><p>Geographic spread.</p><div class="box"><canvas id="c5"></canvas></div></div>
+<div class="card"><h2>6 · Account type × transaction type</h2><p>Which channels each account type uses.</p><div class="box"><canvas id="c6"></canvas></div></div>
+<div class="card"><h2>7 · Customers by total value</h2><p>Hover for count and average ticket.</p><div class="box"><canvas id="c7"></canvas></div></div>
+<div class="card"><h2>8 · Ticket-size distribution</h2><p>How many transactions fall in each ₹10k band.</p><div class="box"><canvas id="c8"></canvas></div></div>
+<div class="card"><h2>9 · Every transaction over time</h2><p>Each dot is one transaction; hover for who/where.</p><div class="box"><canvas id="c9"></canvas></div></div>
+<div class="card"><h2>10 · Category × type value matrix</h2><p>Bubble size = total ₹; find the busiest pairings.</p><div class="box"><canvas id="c10"></canvas></div></div>
+</div>
+<footer>Source: Finance_Data.xlsx. The data has no debit/credit flag, so all amounts are treated as transaction volume (including the “Salary” category).</footer>
+<script>
+const R=[["TXN1000", "2024-01-29", "Pooja Nair", "Pune", "Credit Card", "HDFC", "Salary", 76358, "Salary"], ["TXN1001", "2024-02-17", "Pooja Nair", "Mumbai", "Debit Card", "BOB", "Salary", 19113, "Entertainment"], ["TXN1002", "2024-02-01", "Swati Kulkarni", "Pune", "NEFT", "Yes Bank", "Savings", 53878, "Dining"], ["TXN1003", "2024-02-10", "Anita Verma", "Kolkata", "UPI", "IndusInd", "Savings", 73615, "EMI"], ["TXN1004", "2024-01-22", "Anita Verma", "Hyderabad", "UPI", "SBI", "Salary", 11893, "Travel"], ["TXN1005", "2024-02-04", "Pooja Nair", "Kolkata", "NEFT", "HDFC", "Salary", 61073, "Dining"], ["TXN1006", "2024-01-30", "Meera Iyer", "Delhi", "Credit Card", "PNB", "Salary", 48953, "Entertainment"], ["TXN1007", "2024-01-29", "Meera Iyer", "Pune", "UPI", "IndusInd", "Current", 40383, "Entertainment"], ["TXN1008", "2024-01-10", "Meera Iyer", "Kolkata", "Debit Card", "PNB", "Savings", 11316, "Rent"], ["TXN1009", "2024-02-10", "Sandeep Gupta", "Jaipur", "RTGS", "BOB", "Salary", 6198, "Dining"], ["TXN1010", "2024-02-22", "Meera Iyer", "Lucknow", "Debit Card", "Kotak", "Savings", 88904, "Investment"], ["TXN1011", "2024-02-23", "Pooja Nair", "Delhi", "UPI", "BOB", "Salary", 40125, "Bill Payment"], ["TXN1012", "2024-02-19", "Pooja Nair", "Pune", "UPI", "Yes Bank", "Salary", 33772, "Bill Payment"], ["TXN1013", "2024-01-07", "Meera Iyer", "Jaipur", "RTGS", "Yes Bank", "Savings", 69853, "Travel"], ["TXN1014", "2024-02-09", "Amitabh Chatterjee", "Jaipur", "RTGS", "IDFC First", "Salary", 14678, "EMI"], ["TXN1015", "2024-02-04", "Rajesh Sharma", "Delhi", "NEFT", "IDFC First", "Current", 2264, "Salary"], ["TXN1016", "2024-01-21", "Rajesh Sharma", "Kolkata", "NEFT", "SBI", "Current", 70564, "Salary"], ["TXN1017", "2024-01-18", "Vikram Singh", "Kolkata", "Credit Card", "Axis", "Savings", 58303, "EMI"], ["TXN1018", "2024-02-13", "Ravi Menon", "Pune", "Credit Card", "PNB", "Savings", 5863, "Investment"], ["TXN1019", "2024-01-21", "Meera Iyer", "Ahmedabad", "Debit Card", "PNB", "Savings", 76012, "Entertainment"], ["TXN1020", "2024-01-19", "Swati Kulkarni", "Lucknow", "NEFT", "PNB", "Salary", 12990, "Entertainment"], ["TXN1021", "2024-02-13", "Meera Iyer", "Jaipur", "Debit Card", "SBI", "Savings", 68257, "Investment"], ["TXN1022", "2024-01-06", "Sandeep Gupta", "Delhi", "Credit Card", "ICICI", "Salary", 67142, "Dining"], ["TXN1023", "2024-02-28", "Vikram Singh", "Kolkata", "NEFT", "IDFC First", "Savings", 43879, "Rent"], ["TXN1024", "2024-01-13", "Amitabh Chatterjee", "Kolkata", "IMPS", "BOB", "Current", 35406, "Bill Payment"], ["TXN1025", "2024-01-26", "Sandeep Gupta", "Hyderabad", "RTGS", "IndusInd", "Current", 20830, "Entertainment"], ["TXN1026", "2024-02-15", "Swati Kulkarni", "Delhi", "NEFT", "SBI", "Salary", 54207, "Shopping"], ["TXN1027", "2024-01-04", "Sandeep Gupta", "Pune", "Debit Card", "HDFC", "Salary", 47552, "Investment"], ["TXN1028", "2024-02-29", "Pooja Nair", "Bangalore", "UPI", "IDFC First", "Salary", 62809, "Investment"], ["TXN1029", "2024-01-24", "Sandeep Gupta", "Lucknow", "Debit Card", "IDFC First", "Savings", 74402, "EMI"], ["TXN1030", "2024-02-15", "Pooja Nair", "Mumbai", "RTGS", "Kotak", "Savings", 24851, "Investment"], ["TXN1031", "2024-01-31", "Meera Iyer", "Pune", "IMPS", "IDFC First", "Savings", 39443, "Shopping"], ["TXN1032", "2024-01-02", "Sandeep Gupta", "Bangalore", "Credit Card", "ICICI", "Savings", 80005, "Bill Payment"], ["TXN1033", "2024-01-22", "Sandeep Gupta", "Mumbai", "Credit Card", "Yes Bank", "Savings", 8512, "Salary"], ["TXN1034", "2024-02-09", "Swati Kulkarni", "Kolkata", "NEFT", "ICICI", "Current", 75192, "Bill Payment"], ["TXN1035", "2024-01-30", "Amitabh Chatterjee", "Hyderabad", "UPI", "Yes Bank", "Current", 95950, "Shopping"], ["TXN1036", "2024-02-21", "Pooja Nair", "Mumbai", "Credit Card", "IndusInd", "Current", 24348, "Rent"], ["TXN1037", "2024-01-24", "Sandeep Gupta", "Bangalore", "UPI", "SBI", "Savings", 32386, "EMI"], ["TXN1038", "2024-01-25", "Vikram Singh", "Bangalore", "NEFT", "IndusInd", "Savings", 37665, "Rent"], ["TXN1039", "2024-02-15", "Swati Kulkarni", "Kolkata", "NEFT", "BOB", "Current", 23988, "Bill Payment"], ["TXN1040", "2024-01-10", "Amitabh Chatterjee", "Lucknow", "UPI", "Kotak", "Salary", 99286, "Dining"], ["TXN1041", "2024-02-10", "Ravi Menon", "Bangalore", "UPI", "BOB", "Salary", 26889, "Salary"], ["TXN1042", "2024-01-01", "Vikram Singh", "Hyderabad", "RTGS", "Axis", "Savings", 10908, "Entertainment"], ["TXN1043", "2024-01-16", "Amitabh Chatterjee", "Chennai", "Credit Card", "ICICI", "Salary", 93356, "EMI"], ["TXN1044", "2024-01-09", "Rajesh Sharma", "Mumbai", "IMPS", "BOB", "Savings", 31715, "Shopping"], ["TXN1045", "2024-01-26", "Swati Kulkarni", "Bangalore", "Debit Card", "ICICI", "Salary", 22506, "Salary"], ["TXN1046", "2024-02-28", "Vikram Singh", "Chennai", "IMPS", "PNB", "Salary", 6038, "EMI"], ["TXN1047", "2024-01-09", "Pooja Nair", "Hyderabad", "IMPS", "HDFC", "Salary", 34568, "Entertainment"], ["TXN1048", "2024-02-19", "Rajesh Sharma", "Pune", "Credit Card", "Yes Bank", "Salary", 92623, "Travel"], ["TXN1049", "2024-01-19", "Amitabh Chatterjee", "Lucknow", "RTGS", "SBI", "Salary", 10841, "EMI"]].map(([id,date,cust,city,type,bank,acct,amt,cat])=>({id,date,cust,city,type,bank,acct,amt,cat,m:date.slice(0,7)}));
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+Chart.defaults.color=css('--mu');Chart.defaults.borderColor=css('--bd');Chart.defaults.font.size=11;Chart.defaults.maintainAspectRatio=false;
+const AC=css('--ac'),PAL=['#3b6cf6','#f59e0b','#10b981','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16','#f97316','#64748b'];
+const u=k=>[...new Set(R.map(r=>r[k]))].sort();
+const TYPES=u('type'),CATS=u('cat'),ACCTS=u('acct'),MON=u('m'),tc=t=>PAL[TYPES.indexOf(t)];
+const MN={'2024-01':'Jan 2024','2024-02':'Feb 2024'};
+const sum=a=>a.reduce((t,x)=>t+x.amt,0),inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const grp=(rows,k)=>{const m={};rows.forEach(r=>(m[r[k]]??=[]).push(r));return Object.entries(m).map(([n,a])=>({n,a,s:sum(a),c:a.length})).sort((x,y)=>y.s-x.s)};
+let F={m:'All',acct:'All',type:'All'},C={};
+const rows=()=>R.filter(r=>(F.m==='All'||r.m===F.m)&&(F.acct==='All'||r.acct===F.acct)&&(F.type==='All'||r.type===F.type));
+const mk=(id,cfg)=>{C[id]&&C[id].destroy();C[id]=new Chart(document.getElementById(id),cfg)};
+const lk=v=>'₹'+(v/1000)+'k',valTip={callbacks:{label:c=>inr(c.parsed.y??c.parsed.x)}},noLeg={legend:{display:false}};
+const ch=(el,key,opts)=>{document.getElementById(el).innerHTML=`<span>${opts[0]}</span>`+opts[1].map(([v,l])=>`<button class="${F[key]===v?'on':''}" data-k="${key}" data-v="${v}">${l}</button>`).join('')};
+document.querySelector('.bar').onclick=e=>{const d=e.target.dataset;if(d.k){F[d.k]=d.v;render()}if(e.target.id==='rs'){F={m:'All',acct:'All',type:'All'};render()}};
+function render(){
+ch('fm','m',['Month:',[['All','All'],...MON.map(m=>[m,MN[m]])]]);ch('fa','acct',['Account:',[['All','All'],...ACCTS.map(a=>[a,a])]]);
+const r=rows(),tot=sum(r),top=grp(r,'cat')[0];
+document.getElementById('kpis').innerHTML=[['Transactions',r.length+(F.type!=='All'?' · '+F.type:'')],['Total value',inr(tot)],['Average ticket',r.length?inr(tot/r.length):'–'],['Largest',r.length?inr(Math.max(...r.map(x=>x.amt))):'–'],['Top category',top?top.n+' ('+inr(top.s)+')':'–']].map(k=>`<div class="k"><span>${k[0]}</span><b>${k[1]}</b></div>`).join('');
+const days=grp(r,'date').sort((a,b)=>a.n<b.n?-1:1);
+mk('c1',{type:'line',data:{labels:days.map(d=>d.n.slice(5)),datasets:[{data:days.map(d=>d.s),borderColor:AC,backgroundColor:AC+'33',fill:true,tension:.25,pointRadius:3}]},options:{plugins:{...noLeg,tooltip:{callbacks:{label:c=>`${inr(c.parsed.y)} · ${days[c.dataIndex].c} txn`}}},scales:{y:{ticks:{callback:lk}},x:{ticks:{maxTicksLimit:10}}}}});
+const cat=grp(r,'cat');
+mk('c2',{type:'bar',data:{labels:cat.map(d=>d.n),datasets:[{data:cat.map(d=>d.s),backgroundColor:AC}]},options:{indexAxis:'y',plugins:{...noLeg,tooltip:{callbacks:{label:c=>`${inr(c.parsed.x)} · ${cat[c.dataIndex].c} txn`}}},scales:{x:{ticks:{callback:lk}}}}});
+const bk=grp(r,'bank');
+mk('c4',{type:'bar',data:{labels:bk.map(d=>d.n),datasets:[{data:bk.map(d=>d.s),backgroundColor:'#10b981'}]},options:{plugins:{...noLeg,tooltip:valTip},scales:{y:{ticks:{callback:lk}},x:{ticks:{maxRotation:60}}}}});
+const ct=grp(r,'city');
+mk('c5',{type:'bar',data:{labels:ct.map(d=>d.n),datasets:[{data:ct.map(d=>d.s),backgroundColor:'#f59e0b'}]},options:{plugins:{...noLeg,tooltip:valTip},scales:{y:{ticks:{callback:lk}},x:{ticks:{maxRotation:60}}}}});
+const ac=ACCTS.filter(a=>r.some(x=>x.acct===a));
+mk('c6',{type:'bar',data:{labels:ac,datasets:TYPES.map(t=>({label:t,backgroundColor:tc(t),data:ac.map(a=>sum(r.filter(x=>x.acct===a&&x.type===t)))}))},options:{plugins:{tooltip:valTip},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:lk}}}}});
+const cu=grp(r,'cust');
+mk('c7',{type:'bar',data:{labels:cu.map(d=>d.n),datasets:[{data:cu.map(d=>d.s),backgroundColor:'#8b5cf6'}]},options:{indexAxis:'y',plugins:{...noLeg,tooltip:{callbacks:{label:c=>{const d=cu[c.dataIndex];return `${inr(d.s)} · ${d.c} txn · avg ${inr(d.s/d.c)}`}}}},scales:{x:{ticks:{callback:lk}}}}});
+mk('c8',{type:'bar',data:{labels:Array.from({length:10},(_,i)=>`${i*10}–${i*10+10}k`),datasets:[{data:Array.from({length:10},(_,i)=>r.filter(x=>x.amt>=i*1e4&&x.amt<(i+1)*1e4).length),backgroundColor:'#ec4899'}]},options:{plugins:{...noLeg,tooltip:{callbacks:{label:c=>c.parsed.y+' transactions'}}},scales:{y:{ticks:{precision:0}},x:{ticks:{maxRotation:60}}}}});
+const d0=new Date('2024-01-01');
+mk('c9',{type:'scatter',data:{datasets:TYPES.filter(t=>r.some(x=>x.type===t)).map(t=>({label:t,backgroundColor:tc(t)+'cc',data:r.filter(x=>x.type===t).map(x=>({x:Math.round((new Date(x.date)-d0)/864e5),y:x.amt,d:x}))}))},options:{scales:{x:{ticks:{callback:v=>new Date(d0.getTime()+v*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}},y:{ticks:{callback:lk}}},plugins:{tooltip:{callbacks:{label:c=>{const d=c.raw.d;return `${d.cust} · ${d.city} · ${d.cat} · ${inr(d.amt)}`}}}}}});
+const pts=[];TYPES.forEach(t=>CATS.forEach(k=>{const a=r.filter(x=>x.type===t&&x.cat===k);if(a.length)pts.push({x:t,y:k,r:2+Math.sqrt(sum(a))/22,s:sum(a),c:a.length})}));
+mk('c10',{type:'bubble',data:{datasets:[{data:pts,backgroundColor:AC+'99',borderColor:AC}]},options:{plugins:{...noLeg,tooltip:{callbacks:{label:c=>`${c.raw.y} via ${c.raw.x}: ${inr(c.raw.s)} (${c.raw.c} txn)`}}},scales:{x:{type:'category',labels:TYPES,offset:true},y:{type:'category',labels:CATS,offset:true}}}});
+const tp=grp(r,'type');
+mk('c3',{type:'doughnut',data:{labels:tp.map(d=>d.n),datasets:[{data:tp.map(d=>d.s),backgroundColor:tp.map(d=>tc(d.n))}]},options:{onClick:(e,el)=>{if(el.length){const t=tp[el[0].index].n;F.type=F.type===t?'All':t;render()}},plugins:{legend:{position:'right'},tooltip:{callbacks:{label:c=>`${c.label}: ${inr(c.parsed)} (${tp[c.dataIndex].c} txn)`}}}}});
+}
+render();
+</script></body></html>

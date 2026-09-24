@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDC Technologies | High-Performance Coating Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#E8142A;--red2:#b80f20;--red3:#ff3d52;
+  --dark:#0b0b0b;--dark2:#111111;--dark3:#1a1a1a;--dark4:#242424;
+  --mid:#2e2e2e;--border:#2a2a2a;--border2:#333;
+  --text:#f0ece4;--text2:#a8a49c;--text3:#5c5852;
+  --cream:#f7f3ec;--white:#ffffff;
+  --nav:72px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--dark2)}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--nav);display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;
+  border-bottom:1px solid transparent;
+  transition:background .3s,border-color .3s,backdrop-filter .3s;
+}
+nav.stuck{background:rgba(11,11,11,.94);backdrop-filter:blur(14px);border-bottom-color:var(--border)}
+
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-mark{
+  width:38px;height:38px;background:var(--red);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:#fff;
+  flex-shrink:0;
+}
+.logo-info{}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;color:var(--text);line-height:1}
+.logo-tag{font-size:9.5px;color:var(--text3);letter-spacing:.14em;text-transform:uppercase;margin-top:1px;font-family:'JetBrains Mono',monospace}
+
+.nav-menu{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-menu li{position:relative}
+.nav-menu a{
+  font-size:13.5px;font-weight:500;color:var(--text2);
+  padding:8px 13px;border-radius:6px;text-decoration:none;
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+  transition:color .18s,background .18s;
+}
+.nav-menu a:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.nav-menu .arr{font-size:9px;opacity:.45;margin-top:1px}
+
+.sub{
+  display:none;position:absolute;top:calc(100% + 10px);left:0;
+  background:var(--dark3);border:1px solid var(--border2);border-radius:10px;
+  min-width:210px;padding:6px;
+  box-shadow:0 16px 48px rgba(0,0,0,.5);
+}
+.nav-menu li:hover .sub{display:block}
+.sub a{font-size:12.5px;color:var(--text2);padding:8px 12px;border-radius:6px;display:block}
+.sub a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+
+.nav-cta{
+  background:var(--red)!important;color:#fff!important;
+  padding:9px 22px!important;border-radius:7px!important;
+  font-weight:600!important;font-size:13px!important;
+  transition:background .2s!important;
+}
+.nav-cta:hover{background:var(--red2)!important}
+
+.nav-contact-strip{
+  display:flex;align-items:center;gap:20px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);
+}
+.nav-contact-strip span{color:var(--text2)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;position:relative;overflow:hidden;
+  display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  padding:var(--nav) 5% 0;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 80% 50%,rgba(232,20,42,.08) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 80% at 20% 80%,rgba(232,20,42,.04) 0%,transparent 60%),
+             var(--dark);
+}
+.hero-lines{
+  position:absolute;inset:0;overflow:hidden;opacity:.35;
+}
+.hero-lines svg{position:absolute;inset:0;width:100%;height:100%}
+
+.hero-left{position:relative;z-index:2;padding:80px 0 80px}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;margin-bottom:28px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--red3);letter-spacing:.12em;text-transform:uppercase;
+}
+.hero-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(64px,8vw,120px);line-height:.92;
+  letter-spacing:2px;color:var(--text);
+  margin-bottom:30px;
+}
+.hero h1 .accent{color:var(--red)}
+.hero h1 .outline{
+  -webkit-text-stroke:1.5px rgba(240,236,228,.3);
+  color:transparent;
+}
+
+.hero-body{
+  font-size:15px;line-height:1.75;color:var(--text2);font-weight:300;
+  max-width:480px;margin-bottom:44px;
+}
+
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-red{
+  background:var(--red);color:#fff;
+  padding:14px 32px;border-radius:7px;font-size:14px;font-weight:600;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  transition:background .2s,transform .15s;border:none;cursor:pointer;
+}
+.btn-red:hover{background:var(--red2);transform:translateY(-1px)}
+.btn-ghost{
+  color:var(--text2);border:1px solid var(--border2);
+  padding:14px 32px;border-radius:7px;font-size:14px;font-weight:500;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  transition:border-color .2s,color .2s,background .2s;
+}
+.btn-ghost:hover{border-color:var(--text3);color:var(--text);background:rgba(255,255,255,.03)}
+
+.hero-right{position:relative;z-index:2;display:flex;align-items:center;justify-content:center}
+.hero-visual{
+  position:relative;width:100%;max-width:500px;aspect-ratio:1;
+}
+.hero-rings{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.ring{
+  position:absolute;border-radius:50%;border:1px solid rgba(232,20,42,.15);
+  animation:spin-ring linear infinite;
+}
+.ring:nth-child(1){width:90%;height:90%;animation-duration:40s}
+.ring:nth-child(2){width:70%;height:70%;border-style:dashed;border-color:rgba(232,20,42,.1);animation-duration:25s;animation-direction:reverse}
+.ring:nth-child(3){width:50%;height:50%;animation-duration:18s}
+@keyframes spin-ring{to{transform:rotate(360deg)}}
+
+.hero-center-badge{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  animation:float2 7s ease-in-out infinite;
+}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hcb-num{font-family:'Bebas Neue',sans-serif;font-size:96px;line-height:1;color:var(--red)}
+.hcb-label{font-size:12px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-top:-6px}
+.hcb-sub{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:4px}
+
+.hero-dots{
+  position:absolute;inset:0;pointer-events:none;
+}
+.hero-dot{
+  position:absolute;width:6px;height:6px;border-radius:50%;background:var(--red);
+  animation:twinkle 3s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:.2;transform:scale(.4)}}
+
+.hero-stats{
+  position:absolute;bottom:0;left:0;right:0;z-index:3;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);
+}
+.hero-stat{
+  padding:22px 5%;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:4px;
+}
+.hero-stat:last-child{border-right:none}
+.hs-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text);letter-spacing:1px}
+.hs-lbl{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+/* ── TICKER ── */
+.ticker-bar{
+  background:var(--red);padding:11px 0;overflow:hidden;
+  border-top:2px solid rgba(255,255,255,.1);
+  border-bottom:2px solid var(--red2);
+}
+.ticker-track{display:flex;animation:ticker 35s linear infinite;white-space:nowrap}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:12px;padding:0 28px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;
+  color:rgba(255,255,255,.9);text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+}
+.ticker-sep{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4)}
+@keyframes ticker{to{transform:translateX(-50%)}}
+
+/* ── SECTIONS ── */
+.sec{padding:100px 5%}
+.sec-dark{background:var(--dark2)}
+.sec-darker{background:var(--dark)}
+
+.sec-tag{
+  display:inline-flex;align-items:center;gap:9px;margin-bottom:16px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--red3);
+}
+.sec-tag::before{content:'';width:20px;height:1.5px;background:var(--red)}
+
+.sec-h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,4.5vw,64px);letter-spacing:1.5px;
+  color:var(--text);line-height:.95;margin-bottom:20px;
+}
+.sec-body{
+  font-size:14.5px;line-height:1.8;color:var(--text2);
+  font-weight:300;max-width:560px;
+}
+
+/* ── ABOUT SPLIT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.features-list{list-style:none;margin-top:36px;display:flex;flex-direction:column;gap:12px}
+.features-list li{
+  display:flex;align-items:center;gap:13px;
+  font-size:14px;color:var(--text2);line-height:1.4;
+}
+.features-list li::before{
+  content:'';flex-shrink:0;width:22px;height:22px;border-radius:50%;
+  background:rgba(232,20,42,.12);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M5 11l4 4 8-8' stroke='%23E8142A' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.about-visual{
+  background:var(--dark4);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;aspect-ratio:4/3;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.anim-layers{position:relative;width:260px;height:220px}
+.a-layer{
+  position:absolute;left:0;right:0;border-radius:5px;
+  display:flex;align-items:center;justify-content:flex-end;
+}
+.a-layer-tag{
+  position:absolute;right:-105px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);
+  white-space:nowrap;display:flex;align-items:center;gap:6px;
+}
+.a-layer-tag::before{content:'';width:18px;height:1px;background:var(--border2)}
+.sub-l{bottom:0;height:70px;background:linear-gradient(180deg,#3a3530,#2a2520)}
+.primer-l{bottom:70px;height:20px;background:linear-gradient(180deg,#4a6a80,#3a5a70);opacity:.8}
+.coat-l{bottom:90px;height:34px;background:linear-gradient(180deg,var(--red3),var(--red))}
+.coat-l::after{
+  content:'';position:absolute;inset:0 0 0 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.15) 0%,transparent 40%);
+  border-radius:5px;
+}
+.hbar-wrap{position:absolute;top:30px;left:0;right:0;padding:0 16px}
+.hbar-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text3);margin-bottom:5px}
+.hbar-track{height:6px;background:var(--dark2);border-radius:3px;overflow:hidden}
+.hbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red2),var(--red3));width:85%}
+.hbar-val{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--red);margin-top:3px}
+
+/* ── MARKETS GRID ── */
+.markets-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  margin-top:56px;
+}
+.mcard{
+  background:var(--dark2);padding:30px 26px;
+  cursor:pointer;text-decoration:none;color:inherit;
+  transition:background .2s;
+  display:flex;flex-direction:column;gap:11px;
+  position:relative;overflow:hidden;
+}
+.mcard::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(232,20,42,.0) 0%,rgba(232,20,42,.04) 100%);
+  opacity:0;transition:opacity .2s;
+}
+.mcard:hover{background:var(--dark3)}
+.mcard:hover::before{opacity:1}
+.mcard-arrow{
+  position:absolute;bottom:22px;right:22px;
+  font-size:16px;color:var(--red);opacity:0;
+  transform:translateX(-8px);
+  transition:opacity .2s,transform .2s;
+}
+.mcard:hover .mcard-arrow{opacity:1;transform:translateX(0)}
+
+.mcard-icon{
+  width:46px;height:46px;border-radius:10px;
+  background:rgba(232,20,42,.1);border:1px solid rgba(232,20,42,.2);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.mcard-name{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text);
+}
+.mcard-desc{font-size:12.5px;color:var(--text3);line-height:1.6;padding-right:28px}
+
+/* ── PRODUCTS ── */
+.products-shell{
+  display:grid;grid-template-columns:260px 1fr;
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  margin-top:56px;
+}
+.prod-nav{background:var(--dark3);padding:8px;border-right:1px solid var(--border)}
+.pnav-btn{
+  width:100%;text-align:left;border:none;background:none;cursor:pointer;
+  padding:11px 14px;border-radius:7px;
+  font-family:'Outfit',sans-serif;font-size:13px;color:var(--text2);
+  transition:all .18s;display:block;text-decoration:none;
+}
+.pnav-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.pnav-btn.on{background:var(--red);color:#fff;font-weight:600}
+
+.prod-content{background:var(--dark2)}
+.ppanel{display:none;padding:40px}
+.ppanel.on{display:block}
+.ppanel h3{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;
+  color:var(--text);margin-bottom:12px;
+}
+.ppanel p{font-size:13.5px;color:var(--text2);line-height:1.8;margin-bottom:24px;font-weight:300}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{
+  background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  padding:5px 13px;border-radius:100px;
+  font-size:11.5px;color:var(--text3);font-weight:500;
+  font-family:'JetBrains Mono',monospace;
+}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.metric{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:16px}
+.metric-v{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text);letter-spacing:.5px}
+.metric-k{font-size:10.5px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+/* ── DARK FEATURE STRIP ── */
+.features-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--border);
+}
+.fstrip-item{
+  padding:56px 40px;border-right:1px solid var(--border);
+}
+.fstrip-item:last-child{border-right:none}
+.fstrip-num{
+  font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--red);
+  letter-spacing:2px;line-height:1;margin-bottom:14px;
+}
+.fstrip-title{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;
+  color:var(--text);margin-bottom:10px;
+}
+.fstrip-body{font-size:13px;color:var(--text3);line-height:1.7;font-weight:300}
+
+/* ── BROCHURES ── */
+.bro-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;margin-top:48px;
+}
+.bro-card{
+  background:var(--dark3);border:1px solid var(--border);border-radius:12px;
+  padding:22px 18px;text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:10px;
+  transition:border-color .2s,background .2s,transform .15s;
+}
+.bro-card:hover{
+  border-color:var(--red);background:var(--dark4);transform:translateY(-2px);
+}
+.bro-icon{
+  width:38px;height:46px;background:rgba(232,20,42,.1);
+  border:1px solid rgba(232,20,42,.2);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.bro-title{font-size:12.5px;font-weight:500;color:var(--text2);line-height:1.45}
+.bro-dl{font-size:11px;color:var(--red);font-weight:600;margin-top:auto;font-family:'JetBrains Mono',monospace}
+
+/* ── CTA BAND ── */
+.cta-band{
+  background:var(--red);padding:72px 5%;
+  display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;
+}
+.cta-band h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(28px,3.5vw,50px);letter-spacing:1.5px;
+  color:#fff;max-width:560px;line-height:1;
+}
+.cta-band p{font-size:13.5px;color:rgba(255,255,255,.75);margin-top:10px;font-weight:300}
+.cta-actions{display:flex;gap:14px;flex-wrap:wrap}
+.btn-white{
+  background:#fff;color:var(--red);padding:14px 32px;border-radius:7px;
+  font-size:14px;font-weight:700;text-decoration:none;display:inline-block;
+  transition:opacity .2s,transform .15s;
+}
+.btn-white:hover{opacity:.9;transform:translateY(-1px)}
+.btn-outline-w{
+  border:2px solid rgba(255,255,255,.4);color:#fff;
+  padding:14px 32px;border-radius:7px;
+  font-size:14px;font-weight:600;text-decoration:none;display:inline-block;
+  transition:border-color .2s,background .2s;
+}
+.btn-outline-w:hover{border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.contact-info-list{display:flex;flex-direction:column;gap:24px;margin-top:36px}
+.ci-item{display:flex;gap:14px;align-items:flex-start}
+.ci-icon{
+  width:42px;height:42px;border-radius:9px;flex-shrink:0;
+  background:var(--dark3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+}
+.ci-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.ci-val{font-size:14.5px;color:var(--text);font-weight:500;margin-top:3px}
+
+.c-form{display:flex;flex-direction:column;gap:14px;margin-top:36px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11.5px;font-weight:500;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.fg input,.fg select,.fg textarea{
+  background:var(--dark3);border:1px solid var(--border2);border-radius:8px;
+  padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;
+  outline:none;transition:border-color .2s;width:100%;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--red)}
+.fg select option{background:var(--dark3)}
+.fg textarea{resize:vertical;min-height:100px}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--text3)}
+.f-submit{
+  background:var(--red);color:#fff;border:none;cursor:pointer;
+  padding:13px 32px;border-radius:8px;font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:600;align-self:flex-start;
+  transition:background .2s;
+}
+.f-submit:hover{background:var(--red2)}
+
+/* ── FOOTER ── */
+footer{background:#080808;padding:72px 5% 36px}
+.ft-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;
+  gap:48px;padding-bottom:56px;
+  border-bottom:1px solid var(--border);
+}
+.ft-brand p{font-size:12.5px;color:var(--text3);line-height:1.75;margin-top:16px;max-width:280px;font-weight:300}
+.ft-iso{
+  margin-top:20px;display:inline-block;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  padding:4px 12px;border-radius:4px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3);
+}
+.ft-col h4{
+  font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1.5px;
+  color:var(--text2);margin-bottom:16px;
+}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.ft-col a{font-size:12.5px;color:var(--text3);text-decoration:none;transition:color .18s;font-weight:300}
+.ft-col a:hover{color:var(--text2)}
+.ft-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:14px;padding-top:28px;
+  font-size:11.5px;color:var(--text3);font-family:'JetBrains Mono',monospace;
+}
+.ft-bottom a{color:var(--text3);text-decoration:none}
+.ft-bottom a:hover{color:var(--text2)}
+
+/* ── REVEAL ── */
+.r{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.r.v{opacity:1;transform:translateY(0)}
+.r.d1{transition-delay:.1s}.r.d2{transition-delay:.2s}.r.d3{transition-delay:.3s}.r.d4{transition-delay:.4s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-bottom:80px}
+  .hero-right{display:none}
+  .hero-stats{display:none}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .products-shell{grid-template-columns:1fr}
+  .prod-nav{display:flex;overflow-x:auto;gap:4px;border-right:none;border-bottom:1px solid var(--border)}
+  .pnav-btn{white-space:nowrap}
+  .features-strip{grid-template-columns:1fr}
+  .fstrip-item{border-right:none;border-bottom:1px solid var(--border)}
+  .ft-grid{grid-template-columns:1fr 1fr}
+  .nav-menu{display:none}
+  .nav-contact-strip{display:none}
+  .frow{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <a class="logo" href="#">
+    <div class="logo-mark">SDC</div>
+    <div class="logo-info">
+      <div class="logo-name">SDC Technologies</div>
+      <div class="logo-tag">High Performance Chemistry™</div>
+    </div>
+  </a>
+  <ul class="nav-menu">
+    <li>
+      <a href="#">Our Company <span class="arr">▾</span></a>
+      <div class="sub">
+        <a href="#">About Us</a>
+        <a href="#">Trusted Advisor Program</a>
+        <a href="#">History &amp; Timeline</a>
+        <a href="#">Technology &amp; Innovation</a>
+        <a href="#">Values &amp; Commitments</a>
+        <a href="#">Leadership Team</a>
+        <a href="#">Certifications</a>
+        <a href="#">Careers</a>
+      </div>
+    </li>
+    <li>
+      <a href="#">Markets <span class="arr">▾</span></a>
+      <div class="sub">
+        <a href="#">Ophthalmic Solutions</a>
+        <a href="#">Optics &amp; AR/VR/MR</a>
+        <a href="#">Automotive &amp; Transit</a>
+        <a href="#">Aviation &amp; Aerospace</a>
+        <a href="#">Electronics</a>
+        <a href="#">Medical &amp; Safety</a>
+        <a href="#">Military &amp; Security</a>
+        <a href="#">Marine &amp; Watercraft</a>
+        <a href="#">Architectural &amp; Building</a>
+        <a href="#">Sunglass &amp; Sports Eyewear</a>
+      </div>
+    </li>
+    <li>
+      <a href="#">Products <span class="arr">▾</span></a>
+      <div class="sub">
+        <a href="#">UV-Cure Coatings</a>
+        <a href="#">Ophthalmic Coatings</a>
+        <a href="#">Photochromic Coatings</a>
+        <a href="#">Solvent-Free Coatings</a>
+        <a href="#">Formable Coatings</a>
+        <a href="#">Index-Matched Coatings</a>
+        <a href="#">Tintable Coatings</a>
+        <a href="#">Primerless Coatings</a>
+        <a href="#">Weatherable Coatings</a>
+        <a href="#">3D Print Resins</a>
+        <a href="#">Technical Data Sheets</a>
+      </div>
+    </li>
+    <li>
+      <a href="#">News &amp; Events <span class="arr">▾</span></a>
+      <div class="sub">
+        <a href="#">News 2026</a>
+        <a href="#">News 2025</a>
+        <a href="#">News Archive</a>
+        <a href="#">Events</a>
+      </div>
+    </li>
+    <li>
+      <a href="#">Support <span class="arr">▾</span></a>
+      <div class="sub">
+        <a href="#">Technical Support</a>
+        <a href="#">Support Tools</a>
+      </div>
+    </li>
+    <li><a href="#contact" class="nav-cta">Contact Us</a></li>
+  </ul>
+  <div class="nav-contact-strip">
+    <span>📞 +1-714-939-8300</span>
+    <span style="color:var(--border2)">|</span>
+    <span>customercare@sdctech.com</span>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-lines">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M60 0 L0 0 0 60" fill="none" stroke="rgba(232,20,42,0.06)" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)"/>
+      <line x1="720" y1="0" x2="720" y2="900" stroke="rgba(232,20,42,0.04)" stroke-width="1"/>
+      <line x1="0" y1="450" x2="1440" y2="450" stroke="rgba(232,20,42,0.04)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      Global Market Leader Since 1986
+    </div>
+    <h1>
+      ABRASION<br>
+      <span class="outline">RESISTANT</span><br>
+      <span class="accent">COATINGS</span>
+    </h1>
+    <p class="hero-body">SDC Technologies is the recognized global leader in the development and manufacturing of premium abrasion, scratch, and chemical resistant coatings for plastics, glass, and metal substrates — protecting the world's most prestigious brands.</p>
+    <div class="hero-btns">
+      <a href="#markets" class="btn-red">Explore Markets →</a>
+      <a href="#products" class="btn-ghost">View Products</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="hero-rings">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="hero-center-badge">
+          <div class="hcb-num">40</div>
+          <div class="hcb-label">Years Innovating</div>
+          <div class="hcb-sub">1986 — Present</div>
+        </div>
+      </div>
+      <div class="hero-dots">
+        <div class="hero-dot" style="top:15%;left:12%;animation-delay:.5s"></div>
+        <div class="hero-dot" style="top:8%;left:65%;animation-delay:1.2s"></div>
+        <div class="hero-dot" style="top:70%;left:80%;animation-delay:.8s"></div>
+        <div class="hero-dot" style="top:82%;left:20%;animation-delay:1.9s"></div>
+        <div class="hero-dot" style="top:45%;left:5%;animation-delay:.3s"></div>
+        <div class="hero-dot" style="top:30%;left:90%;animation-delay:2.1s"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hs-val">40+</div>
+      <div class="hs-lbl">Years of Innovation</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-val">12+</div>
+      <div class="hs-lbl">Markets Served</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-val">ISO</div>
+      <div class="hs-lbl">9001:2015 Certified</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hs-val">Global</div>
+      <div class="hs-lbl">Distribution Network</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TICKER ══ -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="tk">
+    <span class="ticker-item">Abrasion Resistance<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Chemical Resistance<span class="ticker-sep"></span></span>
+    <span class="ticker-item">UV-Cure Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">CrystalCoat® Technology<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Photochromic Solutions<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Ophthalmic Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Solvent-Free Formulations<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Index-Matched Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Formable Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">3D Print Resins<span class="ticker-sep"></span></span>
+    <span class="ticker-item">CrystalChrome® Systems<span class="ticker-sep"></span></span>
+    <span class="ticker-item">ISO 9001:2015 Certified<span class="ticker-sep"></span></span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">Abrasion Resistance<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Chemical Resistance<span class="ticker-sep"></span></span>
+    <span class="ticker-item">UV-Cure Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">CrystalCoat® Technology<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Photochromic Solutions<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Ophthalmic Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Solvent-Free Formulations<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Index-Matched Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">Formable Coatings<span class="ticker-sep"></span></span>
+    <span class="ticker-item">3D Print Resins<span class="ticker-sep"></span></span>
+    <span class="ticker-item">CrystalChrome® Systems<span class="ticker-sep"></span></span>
+    <span class="ticker-item">ISO 9001:2015 Certified<span class="ticker-sep"></span></span>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<section class="sec sec-dark" id="about">
+  <div class="about-grid">
+    <div class="r">
+      <div class="sec-tag">Global Market Leader</div>
+      <h2 class="sec-h2">A GLOBAL LEADER IN ABRASION RESISTANT COATING SYSTEMS</h2>
+      <p class="sec-body">SDC Technologies is the recognized market leader in the development and manufacturing of premium abrasion, scratch, and chemical resistant coatings for plastics, glass, and metal substrates. Founded in 1986, we continuously innovate to deliver solutions for a wide range of markets and industrial applications.</p>
+      <ul class="features-list">
+        <li>Abrasion, Chemical, Impact, and Scratch Resistance</li>
+        <li>Compatible with A/R and Metalizing Treatments</li>
+        <li>Solvent-Free (100% Solids) and Solvent-Based Systems</li>
+        <li>Tintability and Precision Index-Matching</li>
+        <li>Primerless and Primer-Free Formulations Available</li>
+      </ul>
+    </div>
+    <div class="r d2">
+      <div class="about-visual">
+        <div>
+          <div class="hbar-wrap" style="position:relative;top:auto;padding:0;margin-bottom:20px">
+            <div class="hbar-label">Coating Hardness Profile</div>
+            <div class="hbar-track"><div class="hbar-fill"></div></div>
+            <div class="hbar-val">Bayer Score: 85+ → Premium Abrasion Resistance</div>
+          </div>
+          <div class="anim-layers">
+            <div class="a-layer coat-l">
+              <div class="a-layer-tag" style="bottom:8px">CrystalCoat® Hard Coat</div>
+            </div>
+            <div class="a-layer primer-l">
+              <div class="a-layer-tag" style="bottom:3px">Adhesion Primer</div>
+            </div>
+            <div class="a-layer sub-l">
+              <div class="a-layer-tag" style="bottom:24px">Substrate (PC/CR-39)</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text3);text-align:center">
+            Cross-section: SDC CrystalCoat® Multilayer System
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MARKETS ══ -->
+<section class="sec sec-darker" id="markets">
+  <div class="r">
+    <div class="sec-tag">Industrial Solutions &amp; Proven Products</div>
+    <h2 class="sec-h2">MARKETS WE SERVE</h2>
+    <p class="sec-body">Our high-performance coating technologies are trusted across the world's most demanding industries — from luxury eyewear to military applications.</p>
+  </div>
+  <div class="markets-grid r">
+    <a class="mcard" href="#"><div class="mcard-icon">👓</div><div class="mcard-name">Ophthalmic Solutions</div><div class="mcard-desc">Innovative wear-resistant and index-matched coating solutions for Rx prescription lenses.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🔭</div><div class="mcard-name">Optics Applications</div><div class="mcard-desc">Optically clear hard coatings with premium wear and chemical resistance for precision optics.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🚗</div><div class="mcard-name">Automotive &amp; Transit</div><div class="mcard-desc">Premium wear resistant solutions for automotive parts, accessories, and transit vehicles.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">✈️</div><div class="mcard-name">Aviation &amp; Aerospace</div><div class="mcard-desc">High-performance coatings for aircraft parts, canopies, and aerospace equipment.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🏗️</div><div class="mcard-name">Architectural &amp; Building</div><div class="mcard-desc">Premium thermal and UV-cure, solvent and solvent-free abrasion resistant coatings.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">💻</div><div class="mcard-name">Electronics</div><div class="mcard-desc">Multi-purpose substrate treatments that enhance appearance and durability of electronic devices.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">⚕️</div><div class="mcard-name">Medical &amp; Safety</div><div class="mcard-desc">Meets or exceeds safety standards for optical clarity, abrasion, and UV resistance for full visibility.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🛡️</div><div class="mcard-name">Military &amp; Security</div><div class="mcard-desc">High-performance coatings for maximum durability, ballistic protection, and field performance.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">⛵</div><div class="mcard-name">Marine &amp; Watercraft</div><div class="mcard-desc">Innovative, patented coatings that enhance the appearance and serviceability of vessels.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🕶️</div><div class="mcard-name">Sunglass &amp; Sports Eyewear</div><div class="mcard-desc">Premium coatings with high-performance wear and UV resistance for luxury eyewear brands.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🥽</div><div class="mcard-name">AR / VR / Mixed Reality</div><div class="mcard-desc">Optically precise coatings for the next generation of augmented and virtual reality optics.</div><span class="mcard-arrow">→</span></a>
+    <a class="mcard" href="#"><div class="mcard-icon">🔬</div><div class="mcard-name">Specialty Applications</div><div class="mcard-desc">Trusted Advisor Program — a catalyst for idea generation and value creation through innovation.</div><span class="mcard-arrow">→</span></a>
+  </div>
+</section>
+
+<!-- ══ PRODUCTS ══ -->
+<section class="sec sec-dark" id="products">
+  <div class="r">
+    <div class="sec-tag">Product Portfolio</div>
+    <h2 class="sec-h2">CRYSTALCOAT® COATING SYSTEMS</h2>
+    <p class="sec-body">Our comprehensive product portfolio covers every application — from UV-cure to solvent-free, ophthalmic to aerospace grade.</p>
+  </div>
+  <div class="products-shell r">
+    <div class="prod-nav">
+      <button class="pnav-btn on" onclick="switchProd(event,'uv')">UV-Cure Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'oph')">Ophthalmic Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'photo')">Photochromic Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'sf')">Solvent-Free Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'form')">Formable Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'tint')">Tintable Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'pless')">Primerless Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'im')">Index-Matched Coatings</button>
+      <button class="pnav-btn" onclick="switchProd(event,'3d')">3D Print Resins</button>
+      <button class="pnav-btn" onclick="switchProd(event,'wx')">Weatherable Coatings</button>
+    </div>
+    <div class="prod-content">
+
+      <div class="ppanel on" id="p-uv">
+        <h3>UV-Cure Coatings</h3>
+        <p>CrystalCoat® UV-cure coatings deliver exceptional hardness, optical clarity, and chemical resistance via a rapid, energy-efficient curing process. Engineered for high-volume production environments requiring consistent, repeatable results across diverse plastic substrates.</p>
+        <div class="tags"><span class="tag">Rapid Cure</span><span class="tag">5H+ Hardness</span><span class="tag">Optical Clarity</span><span class="tag">Chemical Resistance</span><span class="tag">High Volume</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">5H+</div><div class="metric-k">Pencil Hardness</div></div>
+          <div class="metric"><div class="metric-v">&lt;10s</div><div class="metric-k">Cure Time</div></div>
+          <div class="metric"><div class="metric-v">99%</div><div class="metric-k">Optical Clarity</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-oph">
+        <h3>Ophthalmic Coatings</h3>
+        <p>Industry-leading CrystalCoat® ophthalmic systems provide superior wear resistance for Rx prescription lenses. Compatible with A/R treatments and ophthalmic equipment, trusted by the world's premier optical laboratories for consistency and performance.</p>
+        <div class="tags"><span class="tag">Rx Compatible</span><span class="tag">A/R Compatible</span><span class="tag">Tintable</span><span class="tag">Index-Matched</span><span class="tag">Spin &amp; Dip</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">Bayer</div><div class="metric-k">Test Certified</div></div>
+          <div class="metric"><div class="metric-v">±0.01</div><div class="metric-k">Index Precision</div></div>
+          <div class="metric"><div class="metric-v">UV420</div><div class="metric-k">UV Protection</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-photo">
+        <h3>Photochromic Coatings</h3>
+        <p>CrystalChrome® photochromic coating systems offer dynamic light-adaptive performance for ophthalmic and sunglass applications. Our proprietary spin-coating technology delivers uniform photochromic distribution and outstanding durability throughout the product lifecycle.</p>
+        <div class="tags"><span class="tag">CrystalChrome®</span><span class="tag">Light-Adaptive</span><span class="tag">Spin-Coating</span><span class="tag">UV Activated</span><span class="tag">Durable</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">&lt;30s</div><div class="metric-k">Activation Speed</div></div>
+          <div class="metric"><div class="metric-v">85%</div><div class="metric-k">Darkened State</div></div>
+          <div class="metric"><div class="metric-v">25%</div><div class="metric-k">Faded State</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-sf">
+        <h3>Solvent-Free Coatings</h3>
+        <p>Our 100% solids, solvent-free CrystalCoat® formulations eliminate VOC emissions while maintaining exceptional coating performance. Environmentally responsible and REACH compliant — without any compromise on quality, hardness, or durability.</p>
+        <div class="tags"><span class="tag">Zero VOC</span><span class="tag">100% Solids</span><span class="tag">Eco-Friendly</span><span class="tag">REACH Compliant</span><span class="tag">5H Hardness</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">0 g/L</div><div class="metric-k">VOC Content</div></div>
+          <div class="metric"><div class="metric-v">100%</div><div class="metric-k">Solids Content</div></div>
+          <div class="metric"><div class="metric-v">5H</div><div class="metric-k">Hardness Rating</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-form">
+        <h3>Formable Coatings</h3>
+        <p>FormGard® formable coatings maintain full integrity through demanding thermoforming and cold-forming processes. Ideal for insert molding, in-mold decoration (IMD), and complex 3D shaping — with no compromise on final hardness or appearance.</p>
+        <div class="tags"><span class="tag">FormGard®</span><span class="tag">Thermoformable</span><span class="tag">Cold-Formable</span><span class="tag">IMD Compatible</span><span class="tag">Insert Molding</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">200°C</div><div class="metric-k">Max Form Temp</div></div>
+          <div class="metric"><div class="metric-v">300%</div><div class="metric-k">Elongation</div></div>
+          <div class="metric"><div class="metric-v">4H</div><div class="metric-k">Post-Form Hardness</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-tint">
+        <h3>Tintable Coatings</h3>
+        <p>CrystalCoat® tintable systems accept disperse dyes for fashion-forward lens tinting without compromising scratch resistance. Compatible with standard immersion tinting equipment, enabling efficient full-spectrum color production.</p>
+        <div class="tags"><span class="tag">Full Spectrum</span><span class="tag">Disperse Dye</span><span class="tag">Immersion Tinting</span><span class="tag">Fashion Ready</span><span class="tag">5H Hardness</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">360nm</div><div class="metric-k">UV Cutoff</div></div>
+          <div class="metric"><div class="metric-v">Full</div><div class="metric-k">Color Gamut</div></div>
+          <div class="metric"><div class="metric-v">5H</div><div class="metric-k">Hardness</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-pless">
+        <h3>Primerless Coatings</h3>
+        <p>Our primerless CrystalCoat® systems eliminate the primer step entirely, reducing production time, cost, and process complexity. Excellent adhesion direct-to-polycarbonate, CR-39, and other common optical substrates in a single application step.</p>
+        <div class="tags"><span class="tag">Single Step</span><span class="tag">PC Compatible</span><span class="tag">CR-39 Compatible</span><span class="tag">Cost Effective</span><span class="tag">5B Adhesion</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">1-Step</div><div class="metric-k">Full Process</div></div>
+          <div class="metric"><div class="metric-v">5B</div><div class="metric-k">Adhesion Rating</div></div>
+          <div class="metric"><div class="metric-v">-40°C</div><div class="metric-k">Cold Resistance</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-im">
+        <h3>Index-Matched Coatings</h3>
+        <p>CrystalCoat® IM series coatings are precisely formulated to match the refractive index of a wide range of optical substrates, eliminating reflective interfaces and delivering superior optical performance in multi-layer lens systems.</p>
+        <div class="tags"><span class="tag">IM-9060</span><span class="tag">IM-9320</span><span class="tag">IM-9700</span><span class="tag">IM-9981</span><span class="tag">AR Compatible</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">±0.005</div><div class="metric-k">Index Tolerance</div></div>
+          <div class="metric"><div class="metric-v">1.50–1.74</div><div class="metric-k">Index Range</div></div>
+          <div class="metric"><div class="metric-v">&lt;0.1%</div><div class="metric-k">Haze</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-3d">
+        <h3>3D Print Resins</h3>
+        <p>3DLite™ resins deliver high-resolution, optically clear parts for SLA and DLP 3D printing. Purpose-built for optical, medical, and industrial prototype applications requiring excellent mechanical properties and exceptional surface finish.</p>
+        <div class="tags"><span class="tag">3DLite™</span><span class="tag">SLA Compatible</span><span class="tag">DLP Compatible</span><span class="tag">High Resolution</span><span class="tag">Optical Grade</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">25μm</div><div class="metric-k">Layer Resolution</div></div>
+          <div class="metric"><div class="metric-v">85 MPa</div><div class="metric-k">Tensile Strength</div></div>
+          <div class="metric"><div class="metric-v">Clear</div><div class="metric-k">Optical Grade</div></div>
+        </div>
+      </div>
+
+      <div class="ppanel" id="p-wx">
+        <h3>Weatherable Coatings</h3>
+        <p>SDC's weatherable coating systems provide long-term outdoor protection against UV degradation, moisture, and thermal cycling. Formulated for architectural glazing, automotive exterior trim, and outdoor display applications requiring multi-year durability.</p>
+        <div class="tags"><span class="tag">UV Stable</span><span class="tag">Outdoor Durable</span><span class="tag">Thermal Stable</span><span class="tag">Moisture Resistant</span></div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-v">5000h+</div><div class="metric-k">UV Stability (QUV)</div></div>
+          <div class="metric"><div class="metric-v">5H</div><div class="metric-k">Hardness</div></div>
+          <div class="metric"><div class="metric-v">-40–120°C</div><div class="metric-k">Thermal Range</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ INNOVATION STRIP ══ -->
+<section class="sec sec-darker">
+  <div class="r">
+    <div class="sec-tag">Our Story</div>
+    <h2 class="sec-h2">FOUNDED IN 1986.<br>STILL PIONEERING TODAY.</h2>
+    <p class="sec-body">A wholly-owned subsidiary of Mitsui Chemicals, Inc. — combining entrepreneurial innovation with the global reach of a world-class chemical corporation.</p>
+  </div>
+  <div class="features-strip r">
+    <div class="fstrip-item">
+      <div class="fstrip-num">40+</div>
+      <div class="fstrip-title">Years of R&amp;D Leadership</div>
+      <div class="fstrip-body">Continuous product innovation since 1986 — from our founding breakthroughs in abrasion resistance to today's cutting-edge photochromic, AR/VR, and formable coating systems.</div>
+    </div>
+    <div class="fstrip-item">
+      <div class="fstrip-num">12+</div>
+      <div class="fstrip-title">Global Markets</div>
+      <div class="fstrip-body">Trusted by manufacturers across optical, automotive, aerospace, electronics, marine, medical, military, architectural, and specialty industries worldwide.</div>
+    </div>
+    <div class="fstrip-item">
+      <div class="fstrip-num">ISO</div>
+      <div class="fstrip-title">9001:2015 Certified</div>
+      <div class="fstrip-body">Our quality management system ensures every product meets the highest standards of consistency, performance, and reliability — batch after batch, customer after customer.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BROCHURES ══ -->
+<section class="sec sec-dark" id="resources">
+  <div class="r">
+    <div class="sec-tag">Resources &amp; Downloads</div>
+    <h2 class="sec-h2">PRODUCT LITERATURE &amp; TECHNICAL DATA</h2>
+    <p class="sec-body">Download product highlights, technical data sheets, and brochures for our complete range of coating systems.</p>
+  </div>
+  <div class="bro-grid r">
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">SDC Technologies Corporate Brochure 2025</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalChrome® Product Highlights</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalChrome® Photochromic Spin Coating</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalCoat® for AR, VR &amp; MR</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalCoat® for Electronics</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalCoat® Ophthalmic Highlights</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalCoat® Solvent-Free Highlights</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalCoat® UV-Cure Highlights</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalSpin® Coating Equipment</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">CrystalSpin UV AF Anti-Fog Brochure</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">FormGard® Formable Coatings</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">3DLite™ Sales Sheet Oct 2025</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">COTEC Hydrophobic Print Coating System</div><div class="bro-dl">↓ PDF</div></a>
+    <a class="bro-card" href="#"><div class="bro-icon">📄</div><div class="bro-title">Total Vision Care Solution 2025</div><div class="bro-dl">↓ PDF</div></a>
+  </div>
+</section>
+
+<!-- ══ CTA BAND ══ -->
+<div class="cta-band r">
+  <div>
+    <h2>INCREASE YOUR COMPETITIVENESS IN THE MARKETPLACE</h2>
+    <p>Our senior chemists and technical support staff are dedicated to supporting all your coating and processing needs.</p>
+  </div>
+  <div class="cta-actions">
+    <a href="#contact" class="btn-white">Contact Support</a>
+    <a href="#" class="btn-outline-w">Product Finder →</a>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<section class="sec sec-darker" id="contact">
+  <div class="contact-grid">
+    <div class="r">
+      <div class="sec-tag">Get In Touch</div>
+      <h2 class="sec-h2">HAVE QUESTIONS? WE'RE HERE.</h2>
+      <p class="sec-body">Our technical team is ready to help with coating selection, process optimization, and custom formulation development for your specific application.</p>
+      <div class="contact-info-list">
+        <div class="ci-item"><div class="ci-icon">📞</div><div><div class="ci-lbl">Phone</div><div class="ci-val">+1-714-939-8300</div></div></div>
+        <div class="ci-item"><div class="ci-icon">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">customercare@sdctech.com</div></div></div>
+        <div class="ci-item"><div class="ci-icon">🏭</div><div><div class="ci-lbl">Headquarters</div><div class="ci-val">Anaheim, California, USA</div></div></div>
+        <div class="ci-item"><div class="ci-icon">🕐</div><div><div class="ci-lbl">Support Hours</div><div class="ci-val">Mon–Fri, 8:00am – 5:00pm PT</div></div></div>
+        <div class="ci-item"><div class="ci-icon">🌐</div><div><div class="ci-lbl">Subsidiary of</div><div class="ci-val">Mitsui Chemicals, Inc.</div></div></div>
+      </div>
+    </div>
+    <div class="r d2">
+      <div class="sec-tag">Send a Message</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:var(--text);margin-bottom:4px">TECHNICAL INQUIRY</h3>
+      <div class="c-form">
+        <div class="frow">
+          <div class="fg"><label>First Name</label><input type="text" placeholder="John"></div>
+          <div class="fg"><label>Last Name</label><input type="text" placeholder="Smith"></div>
+        </div>
+        <div class="fg"><label>Company</label><input type="text" placeholder="Your Company Name"></div>
+        <div class="fg"><label>Email Address</label><input type="email" placeholder="john@company.com"></div>
+        <div class="fg"><label>Phone</label><input type="tel" placeholder="+1 (555) 000-0000"></div>
+        <div class="fg">
+          <label>Market / Application</label>
+          <select>
+            <option value="">Select your market...</option>
+            <option>Ophthalmic Solutions</option>
+            <option>Optics / AR / VR / MR</option>
+            <option>Automotive &amp; Transit</option>
+            <option>Aviation &amp; Aerospace</option>
+            <option>Electronics</option>
+            <option>Medical &amp; Safety</option>
+            <option>Military &amp; Security</option>
+            <option>Marine &amp; Watercraft</option>
+            <option>Architectural &amp; Building</option>
+            <option>Sunglass &amp; Sports Eyewear</option>
+            <option>Specialty / Other</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message / Inquiry</label><textarea placeholder="Describe your coating challenge, substrate, application, or requirements..."></textarea></div>
+        <button class="f-submit">Send Inquiry →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="ft-grid">
+    <div class="ft-brand">
+      <a class="logo" href="#" style="text-decoration:none">
+        <div class="logo-mark">SDC</div>
+        <div class="logo-info">
+          <div class="logo-name">SDC Technologies</div>
+          <div class="logo-tag">High Performance Chemistry™</div>
+        </div>
+      </a>
+      <p>A global leader in coating materials science, developing premium abrasion, scratch, and chemical resistant coatings since 1986. A wholly-owned subsidiary of Mitsui Chemicals, Inc.</p>
+      <div class="ft-iso">ISO 9001:2015 Certified</div>
+    </div>
+    <div class="ft-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">History &amp; Timeline</a></li>
+        <li><a href="#">Technology &amp; Innovation</a></li>
+        <li><a href="#">Values</a></li>
+        <li><a href="#">Leadership Team</a></li>
+        <li><a href="#">Certifications</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Markets</h4>
+      <ul>
+        <li><a href="#">Ophthalmic</a></li>
+        <li><a href="#">Automotive</a></li>
+        <li><a href="#">Aerospace</a></li>
+        <li><a href="#">Electronics</a></li>
+        <li><a href="#">Medical</a></li>
+        <li><a href="#">Military</a></li>
+        <li><a href="#">Marine</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="#">UV-Cure Coatings</a></li>
+        <li><a href="#">Ophthalmic Coatings</a></li>
+        <li><a href="#">Photochromic</a></li>
+        <li><a href="#">Solvent-Free</a></li>
+        <li><a href="#">Formable</a></li>
+        <li><a href="#">3D Print Resins</a></li>
+        <li><a href="#">Product Finder</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Technical Support</a></li>
+        <li><a href="#">Support Tools</a></li>
+        <li><a href="#">Document Downloads</a></li>
+        <li><a href="#">Distributors</a></li>
+        <li><a href="#">News &amp; Events</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <span>© 2026 SDC Technologies, Inc. (SDC) · All rights reserved.</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <a href="#">Terms</a>
+      <a href="#">Cookies</a>
+      <a href="#">Privacy</a>
+      <a href="#">Information Collected</a>
+      <a href="#">Trademarks &amp; Copyrights</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('stuck',scrollY>20),{passive:true});
+
+// Product switcher
+function switchProd(e,id){
+  document.querySelectorAll('.pnav-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ppanel').forEach(p=>p.classList.remove('on'));
+  e.currentTarget.classList.add('on');
+  document.getElementById('p-'+id).classList.add('on');
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')});
+},{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
